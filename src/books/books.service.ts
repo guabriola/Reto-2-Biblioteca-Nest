@@ -1,5 +1,5 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
-import { BookDto } from './book.dto';
+import { BookDto } from './dto/book.dto';
 import { Book } from './book.class';
 import { InjectRepository } from '@nestjs/typeorm'; 
 import { Repository } from 'typeorm';

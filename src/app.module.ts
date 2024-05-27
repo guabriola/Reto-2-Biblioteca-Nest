@@ -4,8 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksModule } from './books/books.module';
 import { configService } from './config.service';
-import { ReservationsService } from './reservations/reservations.service';
-import { ReservationsController } from './reservations/reservations.controller';
+import { ReservationsModule } from './reservations/reservations.module';
 
 
 @Module({
@@ -15,8 +14,9 @@ import { ReservationsController } from './reservations/reservations.controller';
       //Configuration from config.servie with env variables.
       configService.getTypeOrmConfig(),
     ),
+    ReservationsModule,
   ],
-  controllers: [AppController, ReservationsController],
-  providers: [AppService, ReservationsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
