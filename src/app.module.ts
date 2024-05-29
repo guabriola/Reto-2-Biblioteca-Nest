@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksModule } from './books/books.module';
 import { configService } from './config.service';
 import { ReservationsModule } from './reservations/reservations.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
@@ -15,6 +17,8 @@ import { ReservationsModule } from './reservations/reservations.module';
       configService.getTypeOrmConfig(),
     ),
     ReservationsModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
