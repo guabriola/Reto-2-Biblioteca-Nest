@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ReservationDto } from './dto/reservation.dto';
+import { CreateReservationDto } from './dto/create-reservation.dto';
+import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reservation } from './entities/reservation.entity';
 import { Repository } from 'typeorm';
@@ -13,7 +14,7 @@ export class ReservationsService {
   ) {}
 
 
-  create(newReservation: ReservationDto): Promise<Reservation> {
+  create(newReservation: CreateReservationDto): Promise<Reservation> {
     return this.reservationRepository.save(newReservation);
   }
 
@@ -21,17 +22,15 @@ export class ReservationsService {
     return await this.reservationRepository.find();
   }
 
-  async findReservation(reservationId: string) : Promise <Reservation> {
+  findOne(reservationId: string) : Promise <Reservation> {
     return await this.reservationRepository.findOne({where: { id : parseInt(reservationId)}});
   }
 
-  async update(reservationId: string, updateReservation: ReservationDto) {
-    let toUpdate = await this.reservationRepository.findOne({where: { id : parseInt(reservationId)}})
-    let updated = Object.assign(toUpdate, updateReservation);
-    return this.reservationRepository.save(updated);
+  update(id: number, updateReservationDto: UpdateReservationDto) {
+    return `This action updates a #${id} reservation`;
   }
 
-  async deleteReservation(reservationId: string) : Promise<any>{
-    return await this.reservationRepository.delete({ id : parseInt(reservationId)});
+  remove(id: number) {
+    return `This action removes a #${id} reservation`;
   }
 }

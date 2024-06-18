@@ -7,10 +7,10 @@ export class Reservation {
     id: number;
 
     @Column()
-    bookId: string;
+    bookId: number;
 
     @Column()
-    userId: string;
+    userId: number;
 
     @Column()
     startDate: Date;
