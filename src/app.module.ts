@@ -6,7 +6,6 @@ import { BooksModule } from './books/books.module';
 import { configService } from './config.service';
 import { ReservationsModule } from './reservations/reservations.module';
 // import { AuthModule } from './auth/auth.module';
-// import { UsersModule } from './users/users.module';
 import { UsersModule } from './users/users.module';
 
 
@@ -20,7 +19,6 @@ import { UsersModule } from './users/users.module';
     ReservationsModule,
     UsersModule,
     // AuthModule,
-    // UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

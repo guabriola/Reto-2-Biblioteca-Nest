@@ -2,7 +2,8 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { BookDto } from './dto/book.dto';
 import { Book } from './book.class';
 import { InjectRepository } from '@nestjs/typeorm'; 
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
+import { UpdateBookDto } from './dto/updateBook.dto';
 
 
 @Injectable()
@@ -28,12 +29,14 @@ export class BooksService {
       return await this.booksRepository.delete({ id: parseInt(bookId) });
     }
   
-    async updateBook(bookId: string, newBook: BookDto): Promise<Book> { 
-      let toUpdate = await this.booksRepository.findOne({ where: { id: parseInt(bookId)  } }); 
-  
-      let updated = Object.assign(toUpdate, newBook); 
-  
-      return this.booksRepository.save(updated); 
+    async updateBook(bookId: string, newBook: UpdateBookDto): Promise<UpdateResult> { 
+
+      return this.booksRepository.update(bookId, newBook)
+
+      //This is another way to doit - Check userUpdate in userService
+      // let toUpdate = await this.booksRepository.findOne({ where: { id: parseInt(bookId)  } }); 
+      // let updated = Object.assign(toUpdate, newBook); 
+      // return this.booksRepository.save(updated); 
     }
 
 }

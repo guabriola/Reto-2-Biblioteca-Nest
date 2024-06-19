@@ -1,28 +1,31 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
-export class BookDto {
+export class UpdateBookDto {
   @IsString()
-  @IsNotEmpty()
-
+  @IsOptional()
   readonly title: string;
   
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   readonly genre: string;
 
   @IsString()
+  @IsOptional()
   readonly description: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   readonly author: string;
 
   @IsString()
+  @IsOptional()
   readonly publisher: string;
 
   @IsNumber()
+  @IsOptional()
   readonly pages: number;
 
   @IsString()
+  @IsOptional()
   readonly image_url: string;
 }

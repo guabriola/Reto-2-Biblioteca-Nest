@@ -4,6 +4,8 @@ import { ReservationDto } from './dto/reservation.dto';
 
 import { Request } from 'express';
 import { Reservation } from './entities/reservation.entity';
+import { UpdateResult } from 'typeorm';
+import { UpdateReservationDto } from './dto/updateReservation.dto';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -26,8 +28,8 @@ export class ReservationsController {
   }
 
   @Put(':reservationId')
-  update(@Param('reservationId') id: string, @Body() updateReservationDto: ReservationDto) 
-  : Promise<ReservationDto>
+  update(@Param('reservationId') id: string, @Body() updateReservationDto: UpdateReservationDto) 
+  : Promise<UpdateResult>
   {
     return this.reservationsService.update(id, updateReservationDto);
   }

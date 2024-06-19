@@ -1,4 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Book } from 'src/books/entities/book.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Reservation {
@@ -6,15 +9,15 @@ export class Reservation {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    bookId: string;
+    @ManyToOne(()=> User, user => user.bookReservations)
+    user: User;
 
-    @Column()
-    userId: string;
+    @ManyToOne(() => Book, book => book.bookReservations)
+    book: Book;
 
-    @Column()
+    @Column('date')
     startDate: Date;
 
-    @Column()
+    @Column('date')
     endDate: Date;
 }

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Reservation } from 'src/reservations/entities/reservation.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Book {
@@ -23,6 +24,9 @@ export class Book {
   @Column()
   pages: number;
 
-  @Column()
+  @Column('text')
   image_url: string;
+
+  @OneToMany(() => Reservation, bookReservation => bookReservation.book)
+  bookReservations: Reservation[];
 }
