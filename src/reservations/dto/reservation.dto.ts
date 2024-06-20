@@ -4,17 +4,17 @@ export class ReservationDto {
 
     @IsString()
     @IsNotEmpty()
-    readonly bookId: number;
+    bookId: number;
 
     @IsString()
     @IsNotEmpty()
-    readonly userId: number;
+    userId: number;
 
     @IsDateString()
     @IsNotEmpty()
-    readonly startDate: Date;
+    startDate: Date;
 
     @IsDateString()
     @IsNotEmpty()
-    readonly endDate: Date;
+    endDate: Date;
 }
