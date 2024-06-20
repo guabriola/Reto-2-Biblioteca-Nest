@@ -64,7 +64,7 @@ export class ReservationsService {
     });
 
     let reservationDto = new ReservationDto;
-    //Tener en cuenta que tuve que sacarle el readOnly en ReservationDto
+    //Tener en cuenta que tuve que sacarle el readOnly en atrubutos de ReservationDto
     reservationDto.bookId = findedReservation.book.id;
     reservationDto.userId = findedReservation.user.id;
     reservationDto.startDate = findedReservation.startDate;
