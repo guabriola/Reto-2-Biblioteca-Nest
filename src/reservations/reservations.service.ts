@@ -47,7 +47,7 @@ export class ReservationsService {
     const reservationCreated = await this.reservationRepository.save(reservation);
 
     // //Only the necessary information should be returned
-    return  new ReservationDto(reservationCreated);
+    return new ReservationDto(reservationCreated);
 
   }
 
@@ -81,6 +81,22 @@ export class ReservationsService {
     }
     //I build a new constructor on reservationDto in order to be able to return a ReservationDto
     return new ReservationDto(findedReservation);
+  }
+
+  //Find a reservation By userId
+  async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
+    const reservations = await this.reservationRepository.find({
+      relations: {
+        user: true,
+    },
+    where: {
+        user: {
+            id: parseInt(userId),
+        },
+    },
+    });
+
+    return reservations.map(reservation => (new ReservationDto(reservation)))
   }
 
   //Update Reservation -->Id + StartDate + EndDate <--

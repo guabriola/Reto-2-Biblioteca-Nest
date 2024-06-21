@@ -23,10 +23,18 @@ export class ReservationsController {
     return this.reservationsService.findAll(request.query);
   }
 
+  // @Get('/userId/:userID')
+  // findUserId(@Req() request: Request): Promise<ReservationDto[]> {
+  //   console.log(request.query);
+  //   return this.reservationsService.findAll(request.query);
+  // }
+
   @Get(':reservationId')
   findOne(@Param('reservationId') id: string) {
     return this.reservationsService.findReservationById(id);
   }
+
+
 
   @Put(':reservationId')
   update(@Param('reservationId') id: string, @Body() updateReservationDto: UpdateReservationDto) 
