@@ -1,20 +1,40 @@
-import { IsString, IsDateString, IsNotEmpty } from 'class-validator';
+import { IsString, IsDateString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { Reservation } from '../entities/reservation.entity';
 
 export class ReservationDto {
 
-    @IsString()
-    @IsNotEmpty()
-    bookId: number;
 
     @IsString()
     @IsNotEmpty()
-    userId: number;
+    readonly bookId: number;
+
+    @IsString()
+    @IsNotEmpty()
+    readonly userId: number;
 
     @IsDateString()
     @IsNotEmpty()
-    startDate: Date;
+    readonly startDate: Date;
 
     @IsDateString()
     @IsNotEmpty()
-    endDate: Date;
+    readonly endDate: Date;
+
+    //Constructor declaration
+    constructor();
+
+    //Constructor declaration
+    constructor(reservation: Reservation);
+
+    //Constructor implementation, if has a parameter with type Reservation us this
+    //If is not, uses empty constructor.
+    //This is used to change From Reservation Type yo ReservationDTO type (It's a Mapping)
+    constructor(reservation?: Reservation) {
+        if (reservation) {
+            this.bookId = reservation.book.id;
+            this.userId = reservation.user.id;
+            this.startDate = reservation.startDate;
+            this.endDate = reservation.endDate;
+        }
+    }
 }

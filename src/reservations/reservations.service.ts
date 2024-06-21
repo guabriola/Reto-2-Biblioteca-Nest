@@ -8,6 +8,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Book } from 'src/books/entities/book.entity';
 
 
+
 @Injectable()
 export class ReservationsService {
 
@@ -17,8 +18,8 @@ export class ReservationsService {
     @InjectRepository(Book) private bookRepository: Repository<Book>
   ) { }
 
-
-  async create(newReservation: ReservationDto): Promise<Reservation> {
+  //Create new Reservation
+  async create(newReservation: ReservationDto): Promise<any> {
 
     const { userId, bookId, startDate, endDate } = newReservation;
 
@@ -32,7 +33,8 @@ export class ReservationsService {
       throw new NotFoundException(`The book with id: ${bookId} was not found`);
     }
 
-
+    //Creates a new entity instance and copies all entity properties from this object into a new entity. 
+    //Note that it copies only properties that are present in entity schema.
     const reservation = this.reservationRepository.create({
       user,
       book,
@@ -40,19 +42,38 @@ export class ReservationsService {
       endDate,
     });
 
-    //Here the new reservation is created
-    const reservationCreated = this.reservationRepository.save(reservation);
-    //Only the necessary information should be returned
-    return this.reservationRepository.findOne({ where: { id: (await reservationCreated).id } });
-
-  }
-
-  async findAll(params): Promise<Reservation[]> {
-    return await this.reservationRepository.find();
-  }
-
-  async findReservation(reservationId: string): Promise<ReservationDto> {
     
+    //Here the new reservation is created
+    const reservationCreated = await this.reservationRepository.save(reservation);
+    console.log(reservationCreated)
+    //Only the necessary information should be returned
+    return this.findReservationById(reservation.id.toString())
+
+  }
+
+  //Find All Reservations
+  async findAll(params): Promise<any[]> {
+    const reservations = await this.reservationRepository.find({
+      relations: ['user', 'book'],
+    });
+
+    if (reservations.length > 0) {
+
+      return reservations.map(reservation => ({
+        id: reservation.id,
+        bookId: reservation.book.id,
+        userId: reservation.user.id,
+        startDate: reservation.startDate,
+        endDate: reservation.endDate,
+
+      }))
+
+    } else throw new NotFoundException(`There are no reservations in the Database`);
+  }
+
+  //Find a reservation By Id
+  async findReservationById(reservationId: string): Promise<ReservationDto> {
+
     const findedReservation = await this.reservationRepository.findOne({
       where: {
         id: parseInt(reservationId)
@@ -63,25 +84,31 @@ export class ReservationsService {
       }
     });
 
-    let reservationDto = new ReservationDto;
-    //Tener en cuenta que tuve que sacarle el readOnly en atrubutos de ReservationDto
-    reservationDto.bookId = findedReservation.book.id;
-    reservationDto.userId = findedReservation.user.id;
-    reservationDto.startDate = findedReservation.startDate;
-    reservationDto.endDate = findedReservation.endDate;
-    return reservationDto;
+    if (!findedReservation) {
+      throw new NotFoundException(`The reservation with id ${reservationId} is not exist.`);
+    }
+    //I build a new constructor on reservationDto in order to be able to return a ReservationDto
+    return new ReservationDto(findedReservation);
   }
 
+  //Update Reservation -->Id + StartDate + EndDate <--
   async update(reservationId: string, updateReservation: UpdateReservationDto): Promise<UpdateResult> {
+    try {
+      const findedReservation = await this.findReservationById(reservationId);
+      return this.reservationRepository.update(reservationId, updateReservation);
 
-    return this.reservationRepository.update(reservationId, updateReservation)
-    //This is another way to doit - Check userUpdate in userService
-    // let toUpdate = await this.reservationRepository.findOne({where: { id : parseInt(reservationId)}})
-    // let updated = Object.assign(toUpdate, updateReservation);
-    // return this.reservationRepository.save(updated);
+    } catch (e) {
+      throw e;
+    }
   }
 
+  //Delete Reservation By ID
   async deleteReservation(reservationId: string): Promise<any> {
-    return await this.reservationRepository.delete({ id: parseInt(reservationId) });
+    try {
+      const findedReservation = await this.findReservationById(reservationId);
+      return await this.reservationRepository.delete({ id: parseInt(reservationId) });
+    } catch (e) {
+      throw e;
+    }
   }
 }
