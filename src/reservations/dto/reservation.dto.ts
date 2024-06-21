@@ -3,6 +3,9 @@ import { Reservation } from '../entities/reservation.entity';
 
 export class ReservationDto {
 
+    @IsString()
+    @IsNotEmpty()
+    readonly id: number;
 
     @IsString()
     @IsNotEmpty()
@@ -31,6 +34,7 @@ export class ReservationDto {
     //This is used to change From Reservation Type yo ReservationDTO type (It's a Mapping)
     constructor(reservation?: Reservation) {
         if (reservation) {
+            this.id = reservation.id
             this.bookId = reservation.book.id;
             this.userId = reservation.user.id;
             this.startDate = reservation.startDate;

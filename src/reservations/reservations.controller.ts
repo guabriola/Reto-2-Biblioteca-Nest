@@ -6,13 +6,14 @@ import { Request } from 'express';
 import { Reservation } from './entities/reservation.entity';
 import { UpdateResult } from 'typeorm';
 import { UpdateReservationDto } from './dto/updateReservation.dto';
+import { CreateReservationDto } from './dto/createReservation.dto';
 
 @Controller('reservations')
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) {}
 
   @Post()
-  create(@Body() newReservation: ReservationDto): Promise<Reservation> {
+  create(@Body() newReservation: CreateReservationDto): Promise<ReservationDto> {
     return this.reservationsService.create(newReservation);
   }
 
