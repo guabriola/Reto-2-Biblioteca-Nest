@@ -80,23 +80,59 @@ export class ReservationsService {
       throw new NotFoundException(`The reservation with id ${reservationId} is not exist.`);
     }
     //I build a new constructor on reservationDto in order to be able to return a ReservationDto
+    //Other way is with .map
     return new ReservationDto(findedReservation);
   }
 
   //Find a reservation By userId
   async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
-    const reservations = await this.reservationRepository.find({
-      relations: {
-        user: true,
-    },
-    where: {
-        user: {
-            id: parseInt(userId),
-        },
-    },
-    });
+    const reservations = await this.reservationRepository
+      .createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.book', 'book')
+      .leftJoinAndSelect('reservation.user', 'user')
+      .where('user.id = :userId', { userId })
+      .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
+      .getRawMany();
 
-    return reservations.map(reservation => (new ReservationDto(reservation)))
+    return reservations.map(reservation => ({
+      id: reservation.reservation_id,
+      bookId: reservation.bookId,
+      userId: reservation.userId,
+      startDate: reservation.reservation_startDate,
+      endDate: reservation.reservation_endDate,
+    }
+    ));
+
+    //This another way to doit, is simpler but less efficient.
+    // async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
+    //   const reservations = await this.reservationRepository.find({
+    //     where: { user: { id: parseInt(userId) } },
+    //     relations: ['user', 'book'],
+    //   });
+    //   // console.log(reservations);
+    //   return reservations.map(reservation => (new ReservationDto(reservation)));
+    // }
+  }
+
+
+  //Find a reservation By bookId
+  async findReservationByBookId(bookId: string): Promise<ReservationDto[]> {
+    const reservations = await this.reservationRepository
+      .createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.book', 'book')
+      .leftJoinAndSelect('reservation.user', 'user')
+      .where('book.id = :bookId', { bookId })
+      .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
+      .getRawMany();
+
+    return reservations.map(reservation => ({
+      id: reservation.reservation_id,
+      bookId: reservation.bookId,
+      userId: reservation.userId,
+      startDate: reservation.reservation_startDate,
+      endDate: reservation.reservation_endDate,
+    }
+    ));
   }
 
   //Update Reservation -->Id + StartDate + EndDate <--
