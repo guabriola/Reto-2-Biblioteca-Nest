@@ -14,24 +14,51 @@ export class BooksService {
     ) {}
 
     async findAll(params): Promise<Book[]> { 
+      try{
       return await this.booksRepository.find(); 
+      }catch (e){
+        throw e;
+      }
     }
   
     async findBook(bookId: string): Promise<Book> {
-      return await this.booksRepository.findOne({ where: { id: parseInt(bookId)  } }); 
+      try{
+        return await this.booksRepository.findOne({ where: { id: parseInt(bookId)  } }); 
+      }catch (e){
+        throw e;
+      }
     }
   
     createBook(newBook: BookDto): Promise<Book> {
-      return this.booksRepository.save(newBook);
+      
+      try{
+        return this.booksRepository.save(newBook);
+      }catch (e){
+        throw e;
+      }
     }
   
     async deleteBook(bookId: string): Promise<any> {
-      return await this.booksRepository.delete({ id: parseInt(bookId) });
+      
+      try{
+        const response = await this.booksRepository.delete({ id: parseInt(bookId) });
+        if(response.affected = 0){
+          return
+        }
+      }catch (e){
+        return `Can't delete, the book it is booked`;
+        // throw new Error('The book it is booked');
+      }
     }
   
     async updateBook(bookId: string, newBook: UpdateBookDto): Promise<UpdateResult> { 
 
-      return this.booksRepository.update(bookId, newBook)
+      
+      try{
+        return this.booksRepository.update(bookId, newBook);
+      }catch (e){
+        throw e;
+      }
 
       //This is another way to doit - Check userUpdate in userService
       // let toUpdate = await this.booksRepository.findOne({ where: { id: parseInt(bookId)  } }); 

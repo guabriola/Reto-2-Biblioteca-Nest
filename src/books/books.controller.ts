@@ -9,37 +9,36 @@ import { UpdateBookDto } from './dto/updateBook.dto';
 
 @Controller('books')
 export class BooksController {
-    constructor(private booksService: BooksService){}
-    
-    @Get()
-    findAll(@Req() request: Request): Promise<BookDto[]> { 
-      console.log(request.query);
-      return this.booksService.findAll(request.query);
-    }
-  
-    @Get(':bookId')
-    findBook(@Param('bookId') bookId: string): Promise<BookDto> {
-      return this.booksService.findBook(bookId);
-    }
+  constructor(private booksService: BooksService) { }
+
+  @Get()
+  findAll(@Req() request: Request): Promise<BookDto[]> {
+    console.log(request.query);
+    return this.booksService.findAll(request.query);
+  }
+
+  @Get(':bookId')
+  findBook(@Param('bookId') bookId: string): Promise<BookDto> {
+    return this.booksService.findBook(bookId);
+  }
 
 
-    @Post()
-    createBook(@Body() newBook: BookDto) : Promise<BookDto>{
-        return this.booksService.createBook(newBook);
-    }
+  @Post()
+  createBook(@Body() newBook: BookDto): Promise<BookDto> {
+    return this.booksService.createBook(newBook);
+  }
 
-    @Delete(':bookId')
-    deleteBook(@Param('bookId') bookId: string) : Promise<BookDto>{
-        //deleteBook(@Param('bookId') bookId: string): Promise<Book> { //The guy from the tutorial
-        //used type Book for the promise. I will try with any firts.
-        return this.booksService.deleteBook(bookId);
-    }
+  @Delete(':bookId')
+  deleteBook(@Param('bookId') bookId: string): Promise<BookDto> {
 
-    @Put(':bookId')
-    updateBook(
-        @Param('bookId') bookId: string, 
-        @Body() newBook: UpdateBookDto): Promise<UpdateResult>{
-            return this.booksService.updateBook(bookId, newBook);
-    }
+    return this.booksService.deleteBook(bookId);
+  }
+
+  @Put(':bookId')
+  updateBook(
+    @Param('bookId') bookId: string,
+    @Body() newBook: UpdateBookDto): Promise<UpdateResult> {
+    return this.booksService.updateBook(bookId, newBook);
+  }
 }
 
