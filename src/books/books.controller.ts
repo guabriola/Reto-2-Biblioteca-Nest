@@ -37,7 +37,7 @@ export class BooksController {
   @Put(':bookId')
   updateBook(
     @Param('bookId') bookId: string,
-    @Body() newBook: UpdateBookDto): Promise<UpdateResult> {
+    @Body() newBook: UpdateBookDto): Promise<any> {
     return this.booksService.updateBook(bookId, newBook);
   }
 }
