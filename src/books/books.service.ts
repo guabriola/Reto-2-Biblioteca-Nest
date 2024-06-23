@@ -4,8 +4,6 @@ import { Book } from './book.class';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { UpdateBookDto } from './dto/updateBook.dto';
-import { NotFoundError } from 'rxjs';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 
 @Injectable()
@@ -15,13 +13,23 @@ export class BooksService {
     @InjectRepository(Book) private booksRepository: Repository<Book>,
   ) { }
 
+  //Create Book
+  createBook(newBook: BookDto): Promise<Book> {
+
+    try {
+      return this.booksRepository.save(newBook);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   //Find all books
   async findAll(params): Promise<Book[]> {
     try {
       const books = await this.booksRepository.find();
-      if(books.length>0){
+      if (books.length > 0) {
         return books;
-      }else throw new HttpException({
+      } else throw new HttpException({
         error: `NOT_FOUND - There is no books saved`
       }, HttpStatus.NOT_FOUND)
     } catch (e) {
@@ -34,26 +42,16 @@ export class BooksService {
 
     try {
       const foundedBook = await this.booksRepository.findOne({ where: { id: parseInt(bookId) } });
-      if(foundedBook){
+      if (foundedBook) {
         return foundedBook;
-      }else throw new HttpException({
+      } else throw new HttpException({
         error: `NOT_FOUND - There is not book with id ${bookId}`
       }, HttpStatus.NOT_FOUND)
-    
+
     } catch (e) {
       throw e;
     }
 
-  }
-
-  //Create Book
-  createBook(newBook: BookDto): Promise<Book> {
-
-    try {
-      return this.booksRepository.save(newBook);
-    } catch (e) {
-      throw e;
-    }
   }
 
   //Delete Book
@@ -85,7 +83,7 @@ export class BooksService {
   async updateBook(bookId: string, newBook: UpdateBookDto): Promise<any> {
 
     try {
-      const response =  await this.booksRepository.update(bookId, newBook);
+      const response = await this.booksRepository.update(bookId, newBook);
 
       if (response.affected != 1) {
         return new HttpException({
@@ -104,7 +102,7 @@ export class BooksService {
         error: `Bad request, incorrect data: ${e}`
       }, HttpStatus.BAD_REQUEST)
     }
-    
+
   }
 
 }

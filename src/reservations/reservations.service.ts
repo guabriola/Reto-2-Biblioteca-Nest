@@ -7,6 +7,7 @@ import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Book } from 'src/books/entities/book.entity';
 import { CreateReservationDto } from './dto/createReservation.dto';
+import { todo } from 'node:test';
 
 
 
@@ -21,102 +22,123 @@ export class ReservationsService {
 
   //Create new Reservation
   async create(newReservation: CreateReservationDto): Promise<ReservationDto> {
+    try {
+      const { userId, bookId, startDate, endDate } = newReservation;
 
-    const { userId, bookId, startDate, endDate } = newReservation;
+      const user = await this.userRepository.findOneBy({ id: userId });
+      if (!user) {
+        throw new NotFoundException(`The user with id: ${userId} was not found`);
+      }
 
-    const user = await this.userRepository.findOneBy({ id: userId });
-    if (!user) {
-      throw new NotFoundException(`The user with id: ${userId} was not found`);
+      const book = await this.bookRepository.findOneBy({ id: bookId });
+      if (!book) {
+        throw new NotFoundException(`The book with id: ${bookId} was not found`);
+      }
+
+      // Creates a new entity instance and copies all entity properties from this object into a new entity. 
+      // Note that it copies only properties that are present in entity schema.
+      const reservation = this.reservationRepository.create({
+        user,
+        book,
+        startDate,
+        endDate,
+      });
+
+      //Here the new reservation is created and save in the DB
+      const reservationCreated = await this.reservationRepository.save(reservation);
+
+      // //Only the necessary information should be returned
+      return new ReservationDto(reservationCreated);
+
+    } catch (e) {
+      todo //El querer crear una nueva reserva:
+      //Si el id de usuario o book no existen da el error bien, pero si estan mal los dos
+      //solo muestra un error.
+      //Si las fechas estan con un mal formato si aparecen la dos, pero no aparecen los
+      //errores de id.
+      //En resumen los únicos errores que se acumulan y se muestran son los de las fechas. 
+      throw e;
     }
-
-    const book = await this.bookRepository.findOneBy({ id: bookId });
-    if (!book) {
-      throw new NotFoundException(`The book with id: ${bookId} was not found`);
-    }
-
-    // Creates a new entity instance and copies all entity properties from this object into a new entity. 
-    // Note that it copies only properties that are present in entity schema.
-    const reservation = this.reservationRepository.create({
-      user,
-      book,
-      startDate,
-      endDate,
-    });
-
-    //Here the new reservation is created and save in the DB
-    const reservationCreated = await this.reservationRepository.save(reservation);
-
-    // //Only the necessary information should be returned
-    return new ReservationDto(reservationCreated);
-
   }
 
   //Find All Reservations
   async findAll(params): Promise<any[]> {
-    const reservations = await this.reservationRepository.find({
-      relations: ['user', 'book'],
-    });
+    try {
+      const reservations = await this.reservationRepository.find({
+        relations: ['user', 'book'],
+      });
+      console.log(reservations);
+      if (reservations.length > 0) {
+        return reservations.map(reservation => (new ReservationDto(reservation)))
 
-    if (reservations.length > 0) {
-      return reservations.map(reservation => (new ReservationDto(reservation)))
-
-    } else throw new NotFoundException(`There are no reservations in the Database`);
+      } else throw new NotFoundException(`There are no reservations in the Database`);
+    } catch (e) {
+      throw e;
+    }
   }
 
   //Find a reservation By Id
   async findReservationById(reservationId: string): Promise<ReservationDto> {
+    try {
+      const findedReservation = await this.reservationRepository.findOne({
+        where: {
+          id: parseInt(reservationId)
+        },
+        relations: {
+          user: true,
+          book: true,
+        }
+      });
 
-    const findedReservation = await this.reservationRepository.findOne({
-      where: {
-        id: parseInt(reservationId)
-      },
-      relations: {
-        user: true,
-        book: true,
+      if (!findedReservation) {
+        throw new NotFoundException(`The reservation with id ${reservationId} is not exist.`);
       }
-    });
-
-    if (!findedReservation) {
-      throw new NotFoundException(`The reservation with id ${reservationId} is not exist.`);
+      //I build a new constructor on reservationDto in order to be able to return a ReservationDto
+      //Other way is with .map
+      return new ReservationDto(findedReservation);
+    } catch (e) {
+      throw e;
     }
-    //I build a new constructor on reservationDto in order to be able to return a ReservationDto
-    //Other way is with .map
-    return new ReservationDto(findedReservation);
   }
 
   //Find a reservation By userId
+
   async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
-    const reservations = await this.reservationRepository
-      .createQueryBuilder('reservation')
-      .leftJoinAndSelect('reservation.book', 'book')
-      .leftJoinAndSelect('reservation.user', 'user')
-      .where('user.id = :userId', { userId })
-      .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
-      .getRawMany();
+    try {
+      const reservations = await this.reservationRepository
+        .createQueryBuilder('reservation')
+        .leftJoinAndSelect('reservation.book', 'book')
+        .leftJoinAndSelect('reservation.user', 'user')
+        .where('user.id = :userId', { userId })
+        .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
+        .getRawMany();
 
-    return reservations.map(reservation => ({
-      id: reservation.reservation_id,
-      bookId: reservation.bookId,
-      userId: reservation.userId,
-      startDate: reservation.reservation_startDate,
-      endDate: reservation.reservation_endDate,
+      return reservations.map(reservation => ({
+        id: reservation.reservation_id,
+        bookId: reservation.bookId,
+        userId: reservation.userId,
+        startDate: reservation.reservation_startDate,
+        endDate: reservation.reservation_endDate,
+      }
+      ));
+
+      //This another way to doit, is simpler but less efficient.
+      // async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
+      //   const reservations = await this.reservationRepository.find({
+      //     where: { user: { id: parseInt(userId) } },
+      //     relations: ['user', 'book'],
+      //   });
+      //   // console.log(reservations);
+      //   return reservations.map(reservation => (new ReservationDto(reservation)));
+      // }
+    } catch (e) {
+      throw e;
     }
-    ));
-
-    //This another way to doit, is simpler but less efficient.
-    // async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
-    //   const reservations = await this.reservationRepository.find({
-    //     where: { user: { id: parseInt(userId) } },
-    //     relations: ['user', 'book'],
-    //   });
-    //   // console.log(reservations);
-    //   return reservations.map(reservation => (new ReservationDto(reservation)));
-    // }
   }
-
 
   //Find a reservation By bookId
   async findReservationByBookId(bookId: string): Promise<ReservationDto[]> {
+    try{
     const reservations = await this.reservationRepository
       .createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.book', 'book')
@@ -133,6 +155,9 @@ export class ReservationsService {
       endDate: reservation.reservation_endDate,
     }
     ));
+  }catch(e){
+    throw e;
+  }
   }
 
   //Update Reservation -->Id + StartDate + EndDate <--
