@@ -1,9 +1,10 @@
-import { Injectable, HttpStatus, HttpException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { BookDto } from './dto/book.dto';
 import { Book } from './book.class';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { QueryFailedError, Repository, UpdateResult } from 'typeorm';
 import { UpdateBookDto } from './dto/updateBook.dto';
+import { createBookDto } from './dto/createBook.dto';
 
 
 @Injectable()
@@ -14,12 +15,18 @@ export class BooksService {
   ) { }
 
   //Create Book
-  createBook(newBook: BookDto): Promise<Book> {
+  async createBook(newBook: createBookDto): Promise<BookDto> {
 
     try {
-      return this.booksRepository.save(newBook);
+      return await this.booksRepository.save(newBook);
+      
     } catch (e) {
-      throw e;
+      if (e instanceof QueryFailedError) {
+        if (e.driverError.errno = 1062 || e.driverError.code.includes('ER_DUP_ENTRY')) {
+            throw new HttpException('There is a book with the same title.', HttpStatus.CONFLICT);
+        }
+    }
+    throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -37,8 +44,8 @@ export class BooksService {
     }
   }
 
-  //Find a Book
-  async findBook(bookId: string): Promise<Book> {
+  //Find a Book by Id
+  async findBookById(bookId: string): Promise<Book> {
 
     try {
       const foundedBook = await this.booksRepository.findOne({ where: { id: parseInt(bookId) } });
@@ -52,6 +59,34 @@ export class BooksService {
       throw e;
     }
 
+  }
+
+  //Find a book by Title
+  async findBookByTitle(title: string): Promise<BookDto[]> {
+    try {
+
+      const books = await this.booksRepository
+        .createQueryBuilder('bookSearch')
+        .where('bookSearch.title LIKE :title', { title: `%${title}%` })
+        .getMany()
+
+      if (books.length > 0) {
+        return books;
+      } else {
+        throw new NotFoundException(`There is no book with title ${title.toLowerCase()}.`);
+      }
+
+    } catch (error) {
+      throw error;
+    }
+
+
+    // async getByBatch(batch: string): Promise<Batch[]> {
+    //   return await getRepository(Assignment)
+    //     .createQueryBuilder('a')
+    //     .where('a.batches CONTAINS :batch', { batch: batch })
+    //     .getMany();
+    // }
   }
 
   //Delete Book

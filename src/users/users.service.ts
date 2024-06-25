@@ -10,7 +10,6 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 export class UsersService {
 
     //User service is basic but functional, it will be improve when Security with JWT is implemented
-
     constructor(
         @InjectRepository(User) private usersRepository: Repository<User>,
     ) { }
@@ -45,7 +44,27 @@ export class UsersService {
     }
 
     //Find a user by username
-    
+    async findUserByUsername(username: string): Promise<UserDto> {
+
+        try {
+            const findedUser = await this.usersRepository.find({
+                where: {
+                    username: username,
+                }
+            })
+
+            if (findedUser.length > 0) {
+                return new UserDto(findedUser[0]);
+            } else {
+                throw new NotFoundException(`User ${username.toLowerCase()} is not exist.`);
+            }
+
+        } catch (error) {
+            throw error;
+        }
+
+    }
+
 
     //Create a user
     async createUser(newUser: CreateUserDto): Promise<UserDto> {
@@ -55,7 +74,6 @@ export class UsersService {
         } catch (e) {
             if (e instanceof QueryFailedError) {
                 if (e.driverError.errno = 1062 || e.driverError.code.includes('ER_DUP_ENTRY')) {
-                    console.log(e)
                     throw new HttpException('Username or email already exists', HttpStatus.CONFLICT);
                 }
             }
@@ -104,13 +122,13 @@ export class UsersService {
 
             if (response.affected != 1) {
                 return new HttpException({
-                  error: `NOT_FOUND - There is not book with id ${userId}`
+                    error: `NOT_FOUND - There is not book with id ${userId}`
                 }, HttpStatus.NOT_FOUND)
-              }
-        
-              if (response.affected == 1) {
+            }
+
+            if (response.affected == 1) {
                 return `The book with id ${userId} was deleted`;
-              }
+            }
         } catch (e) {
             throw e;
         }

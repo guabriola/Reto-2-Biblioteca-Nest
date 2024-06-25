@@ -3,27 +3,36 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
-import { UpdateResult } from 'typeorm';
 
 @Controller('users')
 export class UsersController {
     constructor (private userService: UsersService){}
 
+    //Create user
     @Post()
     create(@Body() newUser: User): Promise<UserDto>{
         return this.userService.createUser(newUser);
     }
 
+    //Find all users
     @Get()
     findAll(@Req() request: Request): Promise<UserDto[]>{
         return this.userService.findAll(request.query);
     }
 
+    //Find user by id
     @Get(':userId')
     findOne(@Param('userId') userId: number): Promise<UserDto>{
         return this.userService.findUser(userId);
     }
 
+    //Find user by username
+    @Get('/byusername/:username')
+    findByUsername(@Param('username') username: string): Promise<UserDto>{
+        return this.userService.findUserByUsername(username);
+    }
+
+    //Update user
     @Put(':userId')
     update(
         @Param('userId') userId: number,
@@ -32,6 +41,7 @@ export class UsersController {
         return this.userService.updateUser(userId, newUser);
     }
 
+    //Delete User
     @Delete(':userId')
     delete(@Param('userId') userId: number) : Promise<UserDto>{
         return this.userService.deleteUser(userId);

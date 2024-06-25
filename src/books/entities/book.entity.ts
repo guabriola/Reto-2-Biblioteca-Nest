@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import { Reservation } from 'src/reservations/entities/reservation.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
@@ -6,7 +7,8 @@ export class Book {
   @PrimaryGeneratedColumn() 
   id: number;
 
-  @Column()
+  @Column({ unique: true })
+  @IsNotEmpty()
   title: string;
 
   @Column()
