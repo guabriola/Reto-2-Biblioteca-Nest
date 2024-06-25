@@ -27,7 +27,7 @@ export class UsersController {
     @Put(':userId')
     update(
         @Param('userId') userId: number,
-        @Body() newUser: User): Promise<UpdateResult> //The "UpdateReult" is because i'm using the Repository's update method.
+        @Body() newUser: User): Promise<any> //The "UpdateReult" is because i'm using the Repository's update method.
     {
         return this.userService.updateUser(userId, newUser);
     }

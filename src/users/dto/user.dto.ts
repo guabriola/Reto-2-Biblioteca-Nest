@@ -1,21 +1,34 @@
-import { IsString, IsDateString, IsNotEmpty, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, IsNumber } from 'class-validator';
+import { User } from '../entities/user.entity';
 
 export class UserDto {
 
+    @IsNumber()
+    readonly id: number;
+
     @IsString()
-    @IsNotEmpty()
     readonly username: string;
 
     @IsEmail()
-    @IsNotEmpty()
     readonly email: string;
     
     @IsString()
-    @IsNotEmpty()
     readonly name: string;
 
     @IsString()
-    @IsNotEmpty()
     readonly lastName: string;
 
+    constructor();
+
+    constructor(user : User);
+
+    constructor(user? : User){
+        if(user){
+            this.id = user.id;
+            this.username = user.username;
+            this.email = user.email;
+            this.name = user.name;
+            this.lastName = user.lastName;
+        }
+    }
 }

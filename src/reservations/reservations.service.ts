@@ -67,7 +67,6 @@ export class ReservationsService {
       const reservations = await this.reservationRepository.find({
         relations: ['user', 'book'],
       });
-      console.log(reservations);
       if (reservations.length > 0) {
         return reservations.map(reservation => (new ReservationDto(reservation)))
 
@@ -138,26 +137,26 @@ export class ReservationsService {
 
   //Find a reservation By bookId
   async findReservationByBookId(bookId: string): Promise<ReservationDto[]> {
-    try{
-    const reservations = await this.reservationRepository
-      .createQueryBuilder('reservation')
-      .leftJoinAndSelect('reservation.book', 'book')
-      .leftJoinAndSelect('reservation.user', 'user')
-      .where('book.id = :bookId', { bookId })
-      .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
-      .getRawMany();
+    try {
+      const reservations = await this.reservationRepository
+        .createQueryBuilder('reservation')
+        .leftJoinAndSelect('reservation.book', 'book')
+        .leftJoinAndSelect('reservation.user', 'user')
+        .where('book.id = :bookId', { bookId })
+        .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
+        .getRawMany();
 
-    return reservations.map(reservation => ({
-      id: reservation.reservation_id,
-      bookId: reservation.bookId,
-      userId: reservation.userId,
-      startDate: reservation.reservation_startDate,
-      endDate: reservation.reservation_endDate,
+      return reservations.map(reservation => ({
+        id: reservation.reservation_id,
+        bookId: reservation.bookId,
+        userId: reservation.userId,
+        startDate: reservation.reservation_startDate,
+        endDate: reservation.reservation_endDate,
+      }
+      ));
+    } catch (e) {
+      throw e;
     }
-    ));
-  }catch(e){
-    throw e;
-  }
   }
 
   //Update Reservation -->Id + StartDate + EndDate <--

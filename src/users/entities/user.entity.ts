@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty } from 'class-validator';
 import { Reservation } from 'src/reservations/entities/reservation.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
@@ -7,12 +8,16 @@ export class User {
   id: number;
 
   @Column({ unique: true })
+  @IsNotEmpty()
   username: string;
 
   @Column({ unique: true })
+  @IsNotEmpty()
+  @IsEmail()
   email: string;
 
   @Column()
+  @IsNotEmpty()
   password: string;
 
   @Column()

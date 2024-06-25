@@ -29,7 +29,7 @@ export class ReservationDto {
     //Constructor declaration
     constructor(reservation: Reservation);
 
-    //Constructor implementation, if has a parameter with type Reservation us this
+    //Constructor implementation, if has a parameter with type Reservation us this one
     //If is not, uses empty constructor.
     //This is used to change From Reservation Type yo ReservationDTO type (It's a Mapping)
     constructor(reservation?: Reservation) {
