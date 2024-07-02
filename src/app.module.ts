@@ -10,6 +10,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { BooksController } from './books/books.controller';
 import { UsersController } from './users/users.controller';
 import { ReservationsController } from './reservations/reservations.controller';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 
 
@@ -22,6 +23,11 @@ import { ReservationsController } from './reservations/reservations.controller';
     ),
     ReservationsModule,
     UsersModule,
+    ThrottlerModule.forRoot([{
+      //To protect applications from brute-force attacks ---> rate-limiting
+      ttl: 60000,
+      limit: 10,
+    }]),
     // AuthModule,
   ],
   controllers: [AppController],
@@ -29,13 +35,11 @@ import { ReservationsController } from './reservations/reservations.controller';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-
     //Options for configuration
     // consumer.apply(LoggerMiddleware).forRoutes('songs'); // option no 1
     // consumer
     //   .apply(LoggerMiddleware)
     //   .forRoutes({ path: 'songs', method: RequestMethod.POST }); //option no 2
-
     consumer.apply(LoggerMiddleware).forRoutes(BooksController, UsersController, ReservationsController); //option no 3
   }
 }

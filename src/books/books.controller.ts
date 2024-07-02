@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Post, Req, Body, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards } from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { BooksService } from './books.service';
 import { Request } from 'express';
 import { BookDto } from './dto/book.dto';
@@ -8,6 +9,7 @@ import { createBookDto } from './dto/createBook.dto';
 
 
 @Controller('books')
+@UseGuards(ThrottlerGuard) //Applying Rate Limiting
 export class BooksController {
   constructor(private booksService: BooksService) { }
 

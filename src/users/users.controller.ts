@@ -1,10 +1,12 @@
-import { Controller, Get, Param, Post, Req, Body, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards } from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
 
 @Controller('users')
+@UseGuards(ThrottlerGuard) //Applying Rate Limiting
 export class UsersController {
     constructor (private userService: UsersService){}
 

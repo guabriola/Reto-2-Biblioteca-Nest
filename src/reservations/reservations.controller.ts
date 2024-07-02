@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Req, UseGuards } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import { ReservationDto } from './dto/reservation.dto';
 import { Request } from 'express';
@@ -6,8 +6,10 @@ import { Reservation } from './entities/reservation.entity';
 import { UpdateResult } from 'typeorm';
 import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { CreateReservationDto } from './dto/createReservation.dto';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('reservations')
+@UseGuards(ThrottlerGuard) //Applying Rate Limiting
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) { }
 
