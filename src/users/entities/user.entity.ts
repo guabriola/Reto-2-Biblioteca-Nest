@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { Reservation } from 'src/reservations/entities/reservation.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -18,6 +19,7 @@ export class User {
 
   @Column()
   @IsNotEmpty()
+  //@Exclude() //I don't want to send the password in the response that is why I - If I do this throws error "password can't be empty when i want to create new user"
   password: string;
 
   @Column()

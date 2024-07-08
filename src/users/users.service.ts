@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
@@ -27,13 +28,13 @@ export class UsersService {
         }
     }
 
-    //Find a user
-    async findUser(userId: number): Promise<UserDto> {
+    //Find a user - Returns the complete user. 
+    async findUser(userId: number): Promise<User> {
 
         try {
             const user = await this.usersRepository.findOne({ where: { id: userId } });
             if (user) {
-                return new UserDto(user);
+                return user;
             } else
                 throw new NotFoundException(`There is no username with id ${userId}`);
 
@@ -69,6 +70,11 @@ export class UsersService {
     //Create a user
     async createUser(newUser: CreateUserDto): Promise<UserDto> {
         try {
+            // const createdUser = await this.usersRepository.save(newUser);
+            // return new UserDto(createdUser);
+            const salt = await bcrypt.genSalt();
+            newUser.password = await bcrypt.hash(newUser.password, salt);
+            console.log(newUser.password);
             const createdUser = await this.usersRepository.save(newUser);
             return new UserDto(createdUser);
         } catch (e) {

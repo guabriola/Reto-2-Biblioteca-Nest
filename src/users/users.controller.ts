@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
+import { CreateUserDto } from './dto/createUser.dto';
 
 @Controller('users')
 @UseGuards(ThrottlerGuard) //Applying Rate Limiting
@@ -12,7 +13,7 @@ export class UsersController {
 
     //Create user
     @Post()
-    create(@Body() newUser: User): Promise<UserDto>{
+    create(@Body() newUser: CreateUserDto): Promise<UserDto>{
         return this.userService.createUser(newUser);
     }
 
@@ -24,7 +25,7 @@ export class UsersController {
 
     //Find user by id
     @Get(':userId')
-    findOne(@Param('userId') userId: number): Promise<UserDto>{
+    findOne(@Param('userId') userId: number): Promise<User>{
         return this.userService.findUser(userId);
     }
 

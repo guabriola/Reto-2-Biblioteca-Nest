@@ -11,6 +11,7 @@ import { BooksController } from './books/books.controller';
 import { UsersController } from './users/users.controller';
 import { ReservationsController } from './reservations/reservations.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { AuthModule } from './auth/auth.module';
 
 
 
@@ -28,6 +29,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
       ttl: 60000,
       limit: 10,
     }]),
+    AuthModule,
     // AuthModule,
   ],
   controllers: [AppController],
