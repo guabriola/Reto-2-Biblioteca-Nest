@@ -1,5 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -8,10 +10,23 @@ export class AuthService {
     async signIn(username: string, pass: string): Promise<any>{
         const userDto = await this.usersService.findUserByUsername(username);
         const user = await this.usersService.findUser(userDto.id);
-        if(user?.password !== pass){//* at the end the user?. it is explained.
+        if(user?.password !== pass){//* at the end of the file the user?. it is explained.
             throw new UnauthorizedException();
         }
     }
+
+    async validateUser(username: string, pass: string): Promise<any> {
+        const userDto = await this.usersService.findUserByUsername(username);
+        const user = await this.usersService.findUser(userDto.id);
+        //Unhasing the password of the DB and compared to the entroduced password
+        const unHashedPass = await bcrypt.compare(pass, user.password)
+        
+        if (user && unHashedPass) {
+          const { password, ...result } = user;
+          return result;
+        }
+        return null;
+      }
 }
 
 
