@@ -12,7 +12,7 @@ import { UsersController } from './users/users.controller';
 import { ReservationsController } from './reservations/reservations.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
-
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({

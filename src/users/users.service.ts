@@ -70,8 +70,6 @@ export class UsersService {
     //Create a user
     async createUser(newUser: CreateUserDto): Promise<UserDto> {
         try {
-            // const createdUser = await this.usersRepository.save(newUser);
-            // return new UserDto(createdUser);
             const salt = await bcrypt.genSalt();
             newUser.password = await bcrypt.hash(newUser.password, salt);
             console.log(newUser.password);
