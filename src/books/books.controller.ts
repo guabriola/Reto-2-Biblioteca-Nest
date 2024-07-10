@@ -4,8 +4,9 @@ import { BooksService } from './books.service';
 import { Request } from 'express';
 import { BookDto } from './dto/book.dto';
 import { UpdateBookDto } from './dto/updateBook.dto';
-import { Book } from './entities/book.entity';
 import { createBookDto } from './dto/createBook.dto';
+//Custom decorator for publics routes.
+import { Public } from 'src/common/decorators/public-auth.decorator';
 
 
 @Controller('books')
@@ -14,6 +15,7 @@ export class BooksController {
   constructor(private booksService: BooksService) { }
 
   //Find all books
+  @Public()
   @Get()
   findAll(@Req() request: Request): Promise<BookDto[]> {
     console.log(request.query);
@@ -21,12 +23,14 @@ export class BooksController {
   }
 
   //Find book by id
+  @Public()
   @Get(':bookId')
   findBook(@Param('bookId') bookId: string): Promise<BookDto> {
     return this.booksService.findBookById(bookId);
   }
 
   //Find book's by title
+  @Public()
   @Get('/bytitle/:title')
   findBookByTitle(@Param('title') title: string): Promise<BookDto[]> {
     return this.booksService.findBookByTitle(title);

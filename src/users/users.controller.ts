@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/createUser.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('users')
 @UseGuards(ThrottlerGuard) //Applying Rate Limiting

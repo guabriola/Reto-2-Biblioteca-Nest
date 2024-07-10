@@ -12,7 +12,8 @@ import { UsersController } from './users/users.controller';
 import { ReservationsController } from './reservations/reservations.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core/constants';
 
 
 @Module({
@@ -30,10 +31,16 @@ import { ConfigModule } from '@nestjs/config';
       limit: 10,
     }]),
     AuthModule,
-    // AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      //These makes the JwtAuth global
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
