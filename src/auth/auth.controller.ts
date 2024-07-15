@@ -4,16 +4,19 @@ import { UserDto } from 'src/users/dto/user.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { Public } from 'src/common/decorators/public-auth.decorator';
 
 @Controller('auth')
 export class AuthController {
     constructor (private userService: UsersService, private authService: AuthService){}
 
+    @Public()
     @Post("signup")
     signup(@Body() newUser: CreateUserDto) : Promise <UserDto>{
         return this.userService.createUser(newUser);
     }
 
+    @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@Request() req) {
