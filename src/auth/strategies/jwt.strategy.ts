@@ -8,7 +8,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'Jwt1234',//Todo ---> Change to a Env variable
+      secretOrKey: process.env.JWT_SECRET,
       /*
       secretOrKey: we are using the expedient option of supplying a 
       symmetric secret for signing the token. Other options, such as a 

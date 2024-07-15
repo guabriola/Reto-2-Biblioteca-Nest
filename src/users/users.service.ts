@@ -6,11 +6,11 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
+require('dotenv').config();
 
 @Injectable()
 export class UsersService {
 
-    //User service is basic but functional, it will be improve when Security with JWT is implemented
     constructor(
         @InjectRepository(User) private usersRepository: Repository<User>,
     ) { }
