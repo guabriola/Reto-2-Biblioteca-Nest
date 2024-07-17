@@ -6,6 +6,8 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
+import { retry } from 'rxjs';
+import { use } from 'passport';
 require('dotenv').config();
 
 @Injectable()
@@ -72,7 +74,7 @@ export class UsersService {
         try {
             const salt = await bcrypt.genSalt();
             newUser.password = await bcrypt.hash(newUser.password, salt);
-            console.log(newUser.password);
+            // console.log(newUser.password);
             const createdUser = await this.usersRepository.save(newUser);
             return new UserDto(createdUser);
         } catch (e) {
@@ -89,18 +91,30 @@ export class UsersService {
     async updateUser(userId: number, newUser: UpdateUserDto): Promise<any> {
 
         try {
-            //This looks like is the best way update, using the Repository's update
-            //At the end of the service is another way to doit.
-            const response = await this.usersRepository.update(userId, newUser);
-            if (response.affected != 1) {
+
+            const userToUpdate = await this.usersRepository.findOneBy({id:userId});
+            if (!userToUpdate){
                 return new HttpException({
-                    error: `NOT_FOUND - There is not book with id ${userId}`
-                }, HttpStatus.NOT_FOUND)
+                    error: `NOT_FOUND - User not found`
+                }, HttpStatus.NOT_FOUND);
+            }
+            
+            if(newUser.password){
+                const salt = await bcrypt.genSalt();
+                newUser.password = await bcrypt.hash(newUser.password, salt);
             }
 
-            if (response.affected == 1) {
-                return `The user with id ${userId} was updated`
+            const response = await this.usersRepository.update(userId, newUser);
+
+            if (response.affected != 1) {
+                return new HttpException({
+                    error: `ERROR - Something has happend`
+                }, HttpStatus.BAD_REQUEST)
             }
+
+
+            return `The user with id ${userId} was updated`
+
 
         } catch (e) {
             if (e instanceof QueryFailedError) {
@@ -111,7 +125,7 @@ export class UsersService {
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // This is an other way to doit - But it necessary to change the promisse to --> Promise<User>
+        // This is an other way to the update line - But it necessary to change the promisse to --> Promise<User>
         // let toUpdate = await this.usersRepository.findOne({ where: { id: userId } });
         // let userUpDated = Object.assign(toUpdate, newUser);
         // return this.usersRepository.save(userUpDated);

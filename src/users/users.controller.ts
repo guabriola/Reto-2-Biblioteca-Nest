@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller('users')
 @UseGuards(ThrottlerGuard) //Applying Rate Limiting
@@ -40,7 +41,7 @@ export class UsersController {
     @Put(':userId')
     update(
         @Param('userId') userId: number,
-        @Body() newUser: User): Promise<any> //The "UpdateReult" is because i'm using the Repository's update method.
+        @Body() newUser: UpdateUserDto): Promise<any>
     {
         return this.userService.updateUser(userId, newUser);
     }
