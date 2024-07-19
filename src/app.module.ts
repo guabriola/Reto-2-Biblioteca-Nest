@@ -14,11 +14,14 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
+import { InitService } from './common/services/init.services';
+import { User } from './users/entities/user.entity';
 
 
 @Module({
   imports: [
     BooksModule,
+    TypeOrmModule.forFeature([User]),//This is only for the init.services.ts
     TypeOrmModule.forRoot(
       //Configuration from config.servie with env variables.
       configService.getTypeOrmConfig(),
@@ -40,6 +43,7 @@ import { APP_GUARD } from '@nestjs/core/constants';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    InitService,
   ],
 })
 export class AppModule implements NestModule {

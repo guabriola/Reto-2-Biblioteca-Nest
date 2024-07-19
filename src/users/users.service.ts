@@ -6,8 +6,7 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
-import { retry } from 'rxjs';
-import { use } from 'passport';
+
 require('dotenv').config();
 
 @Injectable()

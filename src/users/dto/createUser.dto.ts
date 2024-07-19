@@ -22,4 +22,17 @@ export class CreateUserDto {
     // @IsNotEmpty()
     lastName: string;
 
+    constructor();
+
+    constructor(createUserDto : CreateUserDto);
+
+    constructor(createUserDto? : CreateUserDto){
+        if(createUserDto){
+            this.username = createUserDto.username;
+            this.email = createUserDto.email;
+            this.password = createUserDto.password;
+            this.name = createUserDto.name;
+            this.lastName = createUserDto.lastName;
+        }
+    }
 }
