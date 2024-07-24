@@ -5,7 +5,10 @@ import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Public } from 'src/common/decorators/public-auth.decorator';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dto/loginDto.dto';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor (private userService: UsersService, private authService: AuthService){}
@@ -16,10 +19,16 @@ export class AuthController {
         return this.userService.createUser(newUser);
     }
 
+
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Request() req) {
-        return this.authService.login(req.user);
+    @ApiOperation({ summary: 'Login user and return JWT token' })
+    @ApiBody({
+      description: 'User credentials',
+      type: LoginDto, // Data Transfer Object for Swagger
+    })
+    async login(@Body() loginDto: LoginDto) {
+      return this.authService.login(loginDto);
     }
 }

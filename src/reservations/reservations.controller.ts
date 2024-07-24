@@ -7,7 +7,10 @@ import { UpdateResult } from 'typeorm';
 import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { CreateReservationDto } from './dto/createReservation.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('Reservations')
 @Controller('reservations')
 @UseGuards(ThrottlerGuard) //Applying Rate Limiting
 export class ReservationsController {

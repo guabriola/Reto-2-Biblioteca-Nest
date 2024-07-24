@@ -4,11 +4,12 @@ import { BooksService } from './books.service';
 import { Request } from 'express';
 import { BookDto } from './dto/book.dto';
 import { UpdateBookDto } from './dto/updateBook.dto';
-import { createBookDto } from './dto/createBook.dto';
+import { CreateBookDto } from './dto/createBook.dto';
 //Custom decorator for publics routes.
 import { Public } from 'src/common/decorators/public-auth.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('Books')
 @Controller('books')
 @UseGuards(ThrottlerGuard) //Applying Rate Limiting
 export class BooksController {
@@ -37,12 +38,14 @@ export class BooksController {
   }
 
   //Create book
+  @ApiBearerAuth()
   @Post()
-  createBook(@Body() newBook: createBookDto): Promise<BookDto> {
+  createBook(@Body() newBook: CreateBookDto): Promise<BookDto> {
     return this.booksService.createBook(newBook);
   }
 
   //Delete book
+  @ApiBearerAuth()
   @Delete(':bookId')
   deleteBook(@Param('bookId') bookId: string): Promise<BookDto> {
 
@@ -50,6 +53,7 @@ export class BooksController {
   }
 
   //Update book
+  @ApiBearerAuth()
   @Put(':bookId')
   updateBook(
     @Param('bookId') bookId: string,

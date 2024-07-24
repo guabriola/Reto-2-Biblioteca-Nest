@@ -4,7 +4,7 @@ import { Book } from './book.class';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository, UpdateResult } from 'typeorm';
 import { UpdateBookDto } from './dto/updateBook.dto';
-import { createBookDto } from './dto/createBook.dto';
+import { CreateBookDto } from './dto/createBook.dto';
 
 
 @Injectable()
@@ -15,7 +15,7 @@ export class BooksService {
   ) { }
 
   //Create Book
-  async createBook(newBook: createBookDto): Promise<BookDto> {
+  async createBook(newBook: CreateBookDto): Promise<BookDto> {
 
     try {
       return await this.booksRepository.save(newBook);
