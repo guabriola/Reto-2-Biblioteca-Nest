@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
 import { InitService } from './common/services/init.services';
 import { User } from './users/entities/user.entity';
+import { CustomDateRangeValidator } from './common/validators/customDateVaildators';
 
 
 @Module({

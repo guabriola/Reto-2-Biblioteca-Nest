@@ -1,20 +1,26 @@
-import { IsString, IsDateString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsDateString, IsOptional, Validate } from 'class-validator';
+import { CustomDateRangeValidator } from 'src/common/validators/customDateVaildators';
 
 export class UpdateReservationDto {
 
     @IsString()
     @IsOptional()
-    readonly bookId: string;
+    readonly bookId: number;
 
     @IsString()
     @IsOptional()
-    readonly userId: string;
+    readonly userId: number;
 
     @IsDateString()
     @IsOptional()
-    readonly startDate: String;
+    readonly startDate: Date;
 
     @IsDateString()
     @IsOptional()
-    readonly endDate: String;
+    readonly endDate: Date;
+
+    @Validate(CustomDateRangeValidator)
+    validateDates() {
+      return this;
+    }
 }
