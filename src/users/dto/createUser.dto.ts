@@ -9,7 +9,7 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     @IsAlphanumeric()//Contains only leters and numbers
-    @Length(6,20)
+    @Length(6, 20)
     @IsLowercase()
     username: string;
 
@@ -34,9 +34,9 @@ export class CreateUserDto {
         minUppercase: 1,
         minNumbers: 1,
         minSymbols: 1,
-      })
+    })
     password: string;
-    
+
     /**
      *  Name of the user must be lowercase and only contain letters.
      *  @example jhon
@@ -61,10 +61,10 @@ export class CreateUserDto {
 
     constructor();
 
-    constructor(createUserDto : CreateUserDto);
+    constructor(createUserDto: CreateUserDto);
 
-    constructor(createUserDto? : CreateUserDto){
-        if(createUserDto){
+    constructor(createUserDto?: CreateUserDto) {
+        if (createUserDto) {
             this.username = createUserDto.username;
             this.email = createUserDto.email;
             this.password = createUserDto.password;

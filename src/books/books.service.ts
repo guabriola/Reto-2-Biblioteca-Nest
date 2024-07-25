@@ -79,14 +79,6 @@ export class BooksService {
     } catch (error) {
       throw error;
     }
-
-
-    // async getByBatch(batch: string): Promise<Batch[]> {
-    //   return await getRepository(Assignment)
-    //     .createQueryBuilder('a')
-    //     .where('a.batches CONTAINS :batch', { batch: batch })
-    //     .getMany();
-    // }
   }
 
   //Delete Book

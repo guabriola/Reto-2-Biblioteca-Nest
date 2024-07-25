@@ -1,11 +1,16 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateBookDto {
-
+  /**
+   * Required
+   */
   @IsString()
   @IsNotEmpty()
   readonly title: string;
-  
+
+  /**
+   * Required
+   */
   @IsString()
   @IsNotEmpty()
   readonly genre: string;
@@ -13,6 +18,9 @@ export class CreateBookDto {
   @IsString()
   readonly description: string;
 
+  /**
+   * Required
+   */
   @IsString()
   @IsNotEmpty()
   readonly author: string;

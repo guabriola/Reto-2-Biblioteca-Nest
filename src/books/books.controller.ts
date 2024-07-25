@@ -7,7 +7,7 @@ import { UpdateBookDto } from './dto/updateBook.dto';
 import { CreateBookDto } from './dto/createBook.dto';
 //Custom decorator for publics routes.
 import { Public } from 'src/common/decorators/public-auth.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Books')
 @Controller('books')
@@ -15,7 +15,11 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class BooksController {
   constructor(private booksService: BooksService) { }
 
-  //Find all books
+  /**
+   * Find all books
+   * */
+  @ApiResponse({ status: 500, description: 'Internal Server Error'})
+  @ApiResponse({ status: 404, description: 'NOT_FOUND - There is no books saved'})
   @Public()
   @Get()
   findAll(@Req() request: Request): Promise<BookDto[]> {
@@ -23,36 +27,61 @@ export class BooksController {
     return this.booksService.findAll(request.query);
   }
 
-  //Find book by id
+  /**
+   * Find book by id
+   * */
+  @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
+  @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @Public()
   @Get(':bookId')
   findBook(@Param('bookId') bookId: string): Promise<BookDto> {
     return this.booksService.findBookById(bookId);
   }
 
-  //Find book's by title
+  /**
+   * Find book's by title
+   * */
+  @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with title xxx'})
+  @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @Public()
   @Get('/bytitle/:title')
   findBookByTitle(@Param('title') title: string): Promise<BookDto[]> {
     return this.booksService.findBookByTitle(title);
   }
 
-  //Create book
+  /**
+   * Create book
+   * */
+  @ApiResponse({ status: 403, description: 'Unauthorized'})
+  @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @ApiBearerAuth()
   @Post()
   createBook(@Body() newBook: CreateBookDto): Promise<BookDto> {
     return this.booksService.createBook(newBook);
   }
 
-  //Delete book
+  /**
+   * Delete book
+   * */
+  @ApiResponse({ status: 200, description: 'The book with id xxx was deleted'})
+  @ApiResponse({ status: 304, description: 'Cant delete, the book it is booked by some user.'})
+  @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
+  @ApiResponse({ status: 403, description: 'Unauthorized'})
+  @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @ApiBearerAuth()
   @Delete(':bookId')
-  deleteBook(@Param('bookId') bookId: string): Promise<BookDto> {
-
+  deleteBook(@Param('bookId') bookId: string): Promise<any> {
     return this.booksService.deleteBook(bookId);
   }
 
-  //Update book
+  /**
+   * Update book
+   * */
+  @ApiResponse({ status: 200, description: 'The book with id xxx was updated'})
+  @ApiResponse({ status: 400, description: 'Bad request, incorrect data'})
+  @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
+  @ApiResponse({ status: 403, description: 'Unauthorized'})
+  @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @ApiBearerAuth()
   @Put(':bookId')
   updateBook(
