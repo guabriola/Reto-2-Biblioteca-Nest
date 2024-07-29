@@ -28,7 +28,11 @@ export class AuthController {
       description: 'User credentials',
       type: LoginDto, // Data Transfer Object for Swagger
     })
-    async login(@Body() loginDto: LoginDto) {
-      return this.authService.login(loginDto);
+    async login(@Request() req) {
+      return this.authService.login(req.user);
     }
+    //This is the way before configuring role based authotization
+    // async login(@Body() loginDto: LoginDto) {
+    //   return this.authService.login(loginDto);
+    // }
 }

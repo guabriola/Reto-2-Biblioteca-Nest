@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { error } from "console";
 import { todo } from "node:test";
 import { CreateUserDto } from "src/users/dto/createUser.dto";
+import { Role } from "src/users/entities/role.enum";
 import { User } from "src/users/entities/user.entity";
 import { UsersService } from "src/users/users.service";
 import { Repository } from "typeorm";
@@ -31,7 +32,8 @@ export class InitService implements OnModuleInit {
                     "email": process.env.ADMIN_EMAIL,
                     "password": process.env.ADMIN_PASSWORD,
                     "name": process.env.ADMIN_NAME,
-                    "lastName": process.env.ADMIN_LAST_NAME
+                    "lastName": process.env.ADMIN_LAST_NAME, 
+                    "role": Role.Admin
                 });
                 this.userService.createUser(newAdminUser)
                 //To Do

@@ -1,5 +1,6 @@
 import { Reservation } from 'src/reservations/entities/reservation.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Role } from './role.enum';
 
 
 
@@ -47,6 +48,13 @@ export class User {
   */
   @Column()
   lastName: string;
+
+  /**
+  * Role of the user
+  * @example ADMIN or USER
+  */
+  @Column()
+  role: Role;
 
   /**
   * Array of Reservations

@@ -1,4 +1,5 @@
 import { IsString, IsNotEmpty, IsEmail, IsAlpha, Length, IsLowercase, IsStrongPassword, IsAlphanumeric } from 'class-validator';
+import { Role } from '../entities/role.enum';
 
 export class CreateUserDto {
 
@@ -59,6 +60,12 @@ export class CreateUserDto {
     @IsNotEmpty()
     lastName: string;
 
+    /**
+    * Role of the user
+    * @example ADMIN or USER
+    */
+    role: Role;
+
     constructor();
 
     constructor(createUserDto: CreateUserDto);
@@ -70,6 +77,7 @@ export class CreateUserDto {
             this.password = createUserDto.password;
             this.name = createUserDto.name;
             this.lastName = createUserDto.lastName;
+            this.role = createUserDto.role;
         }
     }
 }

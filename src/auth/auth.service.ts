@@ -32,7 +32,11 @@ export class AuthService {
       }
     
     async login(user: any) {
-    const payload = { username: user.username, sub: user.id };//I choose a property name of sub to hold our userId value to be consistent with JWT standards.
+    const payload = { username: user.username,
+         sub: user.id,
+         //I choose a property name of sub to hold our userId value to be consistent with JWT standards.
+         role: user.role,
+        };
     return {
         access_token: this.jwtService.sign(payload),
     };
