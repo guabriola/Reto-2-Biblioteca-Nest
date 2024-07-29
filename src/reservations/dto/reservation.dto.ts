@@ -3,18 +3,34 @@ import { Reservation } from '../entities/reservation.entity';
 
 export class ReservationDto {
 
+    /**
+     * Id of the book of the booking
+     */
     @IsString()
     @IsNotEmpty()
     readonly id: number;
 
+    /**
+     * Id of the user of the booking
+     */
     @IsString()
     @IsNotEmpty()
     readonly bookId: number;
 
+    /**
+    * Booking start day
+    * Date format --> YY/MM/DD
+    * @example 2024-06-01
+    */
     @IsString()
     @IsNotEmpty()
     readonly userId: number;
 
+    /**
+    * Booking end day
+    * Date format --> YY/MM/DD
+    * @example 2024-06-01
+    */
     @IsDateString()
     @IsNotEmpty()
     readonly startDate: Date;

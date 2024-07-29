@@ -1,5 +1,3 @@
-
-import { IsNotEmpty } from 'class-validator';
 import { Book } from 'src/books/entities/book.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';

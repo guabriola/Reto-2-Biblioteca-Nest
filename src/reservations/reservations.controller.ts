@@ -7,7 +7,7 @@ import { UpdateResult } from 'typeorm';
 import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { CreateReservationDto } from './dto/createReservation.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('Reservations')
@@ -16,45 +16,64 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) { }
 
-  //Create new reservation
+  /**
+   * Create new reservation
+   * */
+  @ApiResponse({ status: 404, description: 'The book was not found'})
+  @ApiResponse({ status: 404, description: 'The user was not found'})
+  @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @Post()
   create(@Body() newReservation: CreateReservationDto): Promise<ReservationDto> {
     return this.reservationsService.create(newReservation);
   }
 
-  //Get reservation bu reservationId
+  /**
+   * Get reservation bu reservationId
+  */
+  @ApiResponse({ status: 404, description: 'The reservation with id  doesnt exist'})
   @Get(':reservationId')
   findOne(@Param('reservationId') id: string) {
     return this.reservationsService.findReservationById(id);
   }
 
-  //Get all reservations
+  /**
+   * Get all reservations
+  */
+  @ApiResponse({ status: 404, description: 'There are no reservations in the Database'})
   @Get()
   findAll(@Req() request: Request): Promise<Reservation[]> {
     console.log(request.query);
     return this.reservationsService.findAll(request.query);
   }
 
-  //Get a reservation by userId
+  /**
+   * Get a reservation by userId
+   * */
   @Get('/userId/:userId')
   findByUserId(@Param('userId') userId: string): Promise<ReservationDto[]> {
     return this.reservationsService.findReservationByUserId(userId);
   }
 
-  //Get reservations bu bookID
+  /**
+   * Get reservations bu bookID
+   */
   @Get('/bookId/:bookId')
   findByBookId(@Param('bookId') bookId: string): Promise<ReservationDto[]> {
     return this.reservationsService.findReservationByBookId(bookId);
   }
 
-  //Update reservation 
+  /**
+   * Update reservation
+   */ 
   @Put(':reservationId')
   update(@Param('reservationId') id: string, @Body() updateReservationDto: UpdateReservationDto)
     : Promise<UpdateResult> {
     return this.reservationsService.update(id, updateReservationDto);
   }
 
-  //Delete Reservation
+  /**
+   * Delete Reservation
+   */
   @Delete(':reservationId')
   deleteReservation(@Param('reservationId') id: string): Promise<any> {
     return this.reservationsService.deleteReservation(id);

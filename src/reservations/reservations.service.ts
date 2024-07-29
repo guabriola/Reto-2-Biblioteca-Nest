@@ -57,7 +57,7 @@ export class ReservationsService {
       //Si las fechas estan con un mal formato si aparecen la dos, pero no aparecen los
       //errores de id.
       //En resumen los únicos errores que se acumulan y se muestran son los de las fechas. 
-      throw e;
+      throw new Error('Error saving reservation');
     }
   }
 
@@ -90,7 +90,7 @@ export class ReservationsService {
       });
 
       if (!findedReservation) {
-        throw new NotFoundException(`The reservation with id ${reservationId} is not exist.`);
+        throw new NotFoundException(`The reservation with id ${reservationId} doesn't exist.`);
       }
       //I build a new constructor on reservationDto in order to be able to return a ReservationDto
       //Other way is with .map
