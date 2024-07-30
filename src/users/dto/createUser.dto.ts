@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsEmail, IsAlpha, Length, IsLowercase, IsStrongPassword, IsAlphanumeric } from 'class-validator';
-import { Role } from '../entities/role.enum';
+import { IsString, IsNotEmpty, IsEmail, IsAlpha, Length, IsLowercase, IsStrongPassword, IsAlphanumeric, IsArray, ArrayNotEmpty } from 'class-validator';
+import { Role } from 'src/roles/entities/role.entity';
 
 export class CreateUserDto {
 
@@ -61,10 +61,12 @@ export class CreateUserDto {
     lastName: string;
 
     /**
-    * Role of the user
-    * @example ADMIN or USER
+    * Roles of user 
+    * @example ADMIN, USER
     */
-    role: Role;
+    @IsArray()
+    @ArrayNotEmpty()
+    roles: Role[];
 
     constructor();
 
@@ -77,7 +79,7 @@ export class CreateUserDto {
             this.password = createUserDto.password;
             this.name = createUserDto.name;
             this.lastName = createUserDto.lastName;
-            this.role = createUserDto.role;
+            this.roles = createUserDto.roles;
         }
     }
 }

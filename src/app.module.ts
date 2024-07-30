@@ -16,13 +16,16 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
 import { InitService } from './common/services/init.services';
 import { User } from './users/entities/user.entity';
-import { CustomDateRangeValidator } from './common/validators/customDateVaildators';
+// import { CustomDateRangeValidator } from './common/validators/customDateVaildators';
+import { RolesModule } from './roles/roles.module';
+import { Role } from './roles/entities/role.entity';
 
 
 @Module({
   imports: [
     BooksModule,
-    TypeOrmModule.forFeature([User]),//This is only for the init.services.ts
+    TypeOrmModule.forFeature([User, Role]),//This is only for the init.services.ts
+
     TypeOrmModule.forRoot(
       //Configuration from config.servie with env variables.
       configService.getTypeOrmConfig(),
@@ -35,6 +38,7 @@ import { CustomDateRangeValidator } from './common/validators/customDateVaildato
       limit: 10,
     }]),
     AuthModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [

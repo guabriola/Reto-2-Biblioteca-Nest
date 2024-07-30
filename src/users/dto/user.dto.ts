@@ -1,5 +1,6 @@
-import { IsString, IsNotEmpty, IsEmail, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, IsNumber, IsArray } from 'class-validator';
 import { User } from '../entities/user.entity';
+import { Role } from 'src/roles/entities/role.entity';
 
 export class UserDto {
 
@@ -18,6 +19,9 @@ export class UserDto {
     @IsString()
     readonly lastName: string;
 
+    @IsArray()
+    roles: Role[];
+
     constructor();
 
     constructor(user : User);
@@ -29,6 +33,7 @@ export class UserDto {
             this.email = user.email;
             this.name = user.name;
             this.lastName = user.lastName;
+            this.roles = user.roles;
         }
     }
 }

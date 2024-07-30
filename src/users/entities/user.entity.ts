@@ -1,6 +1,6 @@
 import { Reservation } from 'src/reservations/entities/reservation.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Role } from './role.enum';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Role } from 'src/roles/entities/role.entity';
 
 
 
@@ -53,8 +53,9 @@ export class User {
   * Role of the user
   * @example ADMIN or USER
   */
-  @Column()
-  role: Role;
+  @ManyToMany(() => Role)
+  @JoinTable()
+  roles: Role[];
 
   /**
   * Array of Reservations

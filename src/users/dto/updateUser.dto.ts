@@ -1,5 +1,6 @@
-import { IsString, IsEmail, IsOptional, IsNotEmpty, IsAlphanumeric, Length, IsLowercase, IsStrongPassword, IsAlpha } from 'class-validator';
-import { Role } from '../entities/role.enum';
+import { IsString, IsEmail, IsOptional, IsNotEmpty, IsAlphanumeric, Length, IsLowercase, IsStrongPassword, IsAlpha, IsArray } from 'class-validator';
+import { Role } from 'src/roles/entities/role.entity';
+
 
 export class UpdateUserDto {
 
@@ -68,10 +69,11 @@ export class UpdateUserDto {
     lastName: string;
 
     /**
-    * VALUE IS OPTIONAL /
-    * Role of the user
-    * @example ADMIN or USER
+    * VALUE IS OPTIONAL 
+    * Roles of user 
+    * @example ADMIN, USER
     */
-    role: Role;
+    @IsArray()
+    roles: Role[];
 
 }
