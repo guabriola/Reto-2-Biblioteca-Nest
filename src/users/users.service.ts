@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
+import { RolesService } from 'src/roles/roles.service';
 
 require('dotenv').config();
 
@@ -13,6 +14,7 @@ require('dotenv').config();
 export class UsersService {
 
     constructor(
+        private roleService: RolesService,
         @InjectRepository(User) private usersRepository: Repository<User>,
     ) { }
 
@@ -71,9 +73,15 @@ export class UsersService {
     //Create a user
     async createUser(newUser: CreateUserDto): Promise<UserDto> {
         try {
+
+            //Encriptation and serch of the default roll (USER)
             const salt = await bcrypt.genSalt();
+            const userRole = await this.roleService.findOneByRoleName('USER');
+            //Password encriptation
             newUser.password = await bcrypt.hash(newUser.password, salt);
-            // console.log(newUser.password);
+            //Add role
+            newUser.roles = [userRole];
+            
             const createdUser = await this.usersRepository.save(newUser);
             return new UserDto(createdUser);
         } catch (e) {
@@ -128,6 +136,18 @@ export class UsersService {
         // let toUpdate = await this.usersRepository.findOne({ where: { id: userId } });
         // let userUpDated = Object.assign(toUpdate, newUser);
         // return this.usersRepository.save(userUpDated);
+    }
+
+    //Add Role
+    async addRole(username: string, newRole: string): Promise<any> {
+        const user = await this.findUserByUsername(username);
+        let userToUpdate = this.findUser(user.id)
+        console.log(userToUpdate);
+        let roleToAdd = await this.roleService.findOneByRoleName(newRole);
+        console.log(roleToAdd);
+        // user.roles.push(roleToAdd);
+        // await this.usersRepository.update(user.id, userToUpdate);
+
     }
 
     //Delete a user

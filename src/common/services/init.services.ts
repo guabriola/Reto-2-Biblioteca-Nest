@@ -21,16 +21,15 @@ export class InitService implements OnModuleInit {
 
 
     async onModuleInit() {
+        //Creating defaults roles ADMIN and USER.
         await this.createUserRoles();
+        //User Admin has ADMIN and USER roles.
         await this.createUserAdm();
     }
 
     private async createUserRoles() {
 
         try {
-            // const adminRole = await this.rolesRepository.findOne({ where: { role: 'ADMIN' } });
-            // const userRole = await this.rolesRepository.findOne({ where: { role: 'USER' } });
-
             const [adminRole, userRole] = await Promise.all([
                 this.rolesRepository.findOne({ where: { role: 'ADMIN' } }),
                 this.rolesRepository.findOne({ where: { role: 'USER' } })
@@ -64,7 +63,7 @@ export class InitService implements OnModuleInit {
 
             if (!admin && adminRole) {
                 console.log('Admin user creatrion in progress...');
-                const newAdminUser = new CreateUserDto({
+                let newAdminUser = new CreateUserDto({
                     "username": "admin",
                     "email": process.env.ADMIN_EMAIL,
                     "password": process.env.ADMIN_PASSWORD,
@@ -72,8 +71,11 @@ export class InitService implements OnModuleInit {
                     "lastName": process.env.ADMIN_LAST_NAME,
                     "roles": []
                 });
-                newAdminUser.roles = [adminRole];
-                this.userService.createUser(newAdminUser);
+                // newAdminUser.roles.push(adminRole);
+                await this.userService.createUser(newAdminUser);
+
+                this.userService.addRole("admin", 'ADMIN');
+
                 //To Do
                 //Change console.log for logging
                 console.log("The user admin was created as a ADMIN");

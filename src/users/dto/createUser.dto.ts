@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEmail, IsAlpha, Length, IsLowercase, IsStrongPassword, IsAlphanumeric, IsArray, ArrayNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsEmail, IsAlpha, Length, IsLowercase, IsStrongPassword, IsAlphanumeric, IsArray, ArrayNotEmpty, IsOptional } from 'class-validator';
 import { Role } from 'src/roles/entities/role.entity';
 
 export class CreateUserDto {
@@ -62,10 +62,11 @@ export class CreateUserDto {
 
     /**
     * Roles of user 
-    * @example ADMIN, USER
+    * @default USER for every new user
+    * @requires ADMIN role to add another role.
     */
+    @IsOptional()
     @IsArray()
-    @ArrayNotEmpty()
     roles: Role[];
 
     constructor();

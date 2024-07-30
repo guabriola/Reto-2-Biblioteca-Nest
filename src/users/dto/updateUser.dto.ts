@@ -73,6 +73,7 @@ export class UpdateUserDto {
     * Roles of user 
     * @example ADMIN, USER
     */
+    @IsOptional()
     @IsArray()
     roles: Role[];
 
