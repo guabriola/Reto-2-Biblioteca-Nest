@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
 import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/createUser.dto';
@@ -44,8 +43,8 @@ export class UsersController {
     @ApiResponse({ status: 403, description: 'Unauthorized'})
     @ApiResponse({ status: 500, description: 'Internal Server Error'})
     @Get(':userId')
-    findOne(@Param('userId') userId: number): Promise<User>{
-        return this.userService.findUser(userId);
+    findOneById(@Param('userId') userId: number): Promise<UserDto>{
+        return this.userService.findUserById(userId);
     }
 
     /**
@@ -86,4 +85,22 @@ export class UsersController {
     delete(@Param('userId') userId: number) : Promise<UserDto>{
         return this.userService.deleteUser(userId);
     }
+
+    /**
+     * Add Role
+     * @example ADMIN, USER
+     */
+    @ApiResponse({ status: 409, description: 'User username already has the role rolename'})
+    @ApiResponse({ status: 404, description: 'NOT_FOUND - User not exists'})
+    @ApiResponse({ status: 404, description: 'NOT_FOUND - Role not exists'})
+    @ApiResponse({ status: 403, description: 'Unauthorized'})
+    @ApiResponse({ status: 500, description: 'Internal Server Error'})
+    @Put('/:userName/:roleName')
+    addRole(
+        @Param('userName') userName: string,
+        @Param('roleName') roleName: string 
+        ) : Promise<UserDto> {
+            return this.userService.addRole(userName, roleName);
+        }
+
 }

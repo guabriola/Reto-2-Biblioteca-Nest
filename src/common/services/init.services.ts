@@ -1,6 +1,5 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { error } from "console";
 import { CreateUserDto } from "src/users/dto/createUser.dto";
 import { Role } from "src/roles/entities/role.entity";
 import { User } from "src/users/entities/user.entity";
@@ -78,7 +77,7 @@ export class InitService implements OnModuleInit {
 
                 //To Do
                 //Change console.log for logging
-                console.log("The user admin was created as a ADMIN");
+                console.log("The user admin was created with roles ADMIN and USER");
 
             }
         } catch (e) {

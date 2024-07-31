@@ -31,7 +31,7 @@ export class UsersService {
         }
     }
 
-    //Find a user - Returns the complete user. 
+    //Find a user - Returns the complete user. For authentication
     async findUser(userId: number): Promise<User> {
 
         try {
@@ -47,6 +47,24 @@ export class UsersService {
 
     }
 
+    //Find a user by Id for the controller  - Returns UserDto For authentication
+    async findUserById(userId: number): Promise<UserDto> {
+
+        try {
+            const user = await this.usersRepository.findOne({ where: { id: userId } });
+            if (user) {
+                return new UserDto(user);
+            } else
+                throw new NotFoundException(`There is no username with id ${userId}`);
+
+        } catch (e) {
+            throw e;
+        }
+
+    }
+
+
+
     //Find a user by username
     async findUserByUsername(username: string): Promise<UserDto> {
 
@@ -54,7 +72,8 @@ export class UsersService {
             const findedUser = await this.usersRepository.find({
                 where: {
                     username: username,
-                }
+                },
+                relations: ['roles']
             })
 
             if (findedUser.length > 0) {
@@ -81,7 +100,7 @@ export class UsersService {
             newUser.password = await bcrypt.hash(newUser.password, salt);
             //Add role
             newUser.roles = [userRole];
-            
+
             const createdUser = await this.usersRepository.save(newUser);
             return new UserDto(createdUser);
         } catch (e) {
@@ -99,14 +118,14 @@ export class UsersService {
 
         try {
 
-            const userToUpdate = await this.usersRepository.findOneBy({id:userId});
-            if (!userToUpdate){
+            const userToUpdate = await this.usersRepository.findOneBy({ id: userId });
+            if (!userToUpdate) {
                 return new HttpException({
                     error: `NOT_FOUND - User not found`
                 }, HttpStatus.NOT_FOUND);
             }
-            
-            if(newUser.password){
+
+            if (newUser.password) {
                 const salt = await bcrypt.genSalt();
                 newUser.password = await bcrypt.hash(newUser.password, salt);
             }
@@ -139,15 +158,32 @@ export class UsersService {
     }
 
     //Add Role
-    async addRole(username: string, newRole: string): Promise<any> {
-        const user = await this.findUserByUsername(username);
-        let userToUpdate = this.findUser(user.id)
-        console.log(userToUpdate);
-        let roleToAdd = await this.roleService.findOneByRoleName(newRole);
-        console.log(roleToAdd);
-        // user.roles.push(roleToAdd);
-        // await this.usersRepository.update(user.id, userToUpdate);
+    async addRole(username: string, roleName: string): Promise<UserDto> {
+        try {
+            const user = await this.findUserByUsername(username);
+            const roleToAdd = await this.roleService.findOneByRoleName(roleName);
 
+            //User exists?
+            if (!user) {
+                throw new NotFoundException('NOT_FOUND - User not exists');
+            }
+
+            //Role exists?
+            if (!roleToAdd) {
+                throw new NotFoundException('NOT_FOUND - Role not exists');
+            }
+            
+            //User already have the role?
+            if (user.roles.some(role => role.id === roleToAdd.id)) {
+                throw new HttpException(`User ${username} already has the role ${roleName}`, HttpStatus.CONFLICT);
+            }
+
+            user.roles.push(roleToAdd);
+            const updatedUser = await this.usersRepository.save(user);
+            return new UserDto(updatedUser);
+        } catch (e) {
+            throw e;
+        }
     }
 
     //Delete a user

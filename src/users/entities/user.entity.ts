@@ -54,7 +54,15 @@ export class User {
   * @example ADMIN or USER
   */
   @ManyToMany(() => Role)
-  @JoinTable()
+  @JoinTable({
+    name: 'users_roles',
+    joinColumn: {
+      name: 'user_id',
+    },
+    inverseJoinColumn: {
+      name: 'role_id',
+    }
+  })
   roles: Role[];
 
   /**
