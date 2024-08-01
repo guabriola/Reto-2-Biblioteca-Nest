@@ -172,18 +172,63 @@ export class UsersService {
             if (!roleToAdd) {
                 throw new NotFoundException('NOT_FOUND - Role not exists');
             }
-            
-            //User already have the role?
+
+            //Does the user have that role?
             if (user.roles.some(role => role.id === roleToAdd.id)) {
                 throw new HttpException(`User ${username} already has the role ${roleName}`, HttpStatus.CONFLICT);
             }
 
+            //Adding the role
             user.roles.push(roleToAdd);
             const updatedUser = await this.usersRepository.save(user);
             return new UserDto(updatedUser);
         } catch (e) {
             throw e;
         }
+    }
+
+    //Remove Role
+    async removeRole(username: string, roleName: string): Promise<UserDto> {
+        try {
+            const user = await this.findUserByUsername(username);
+            const roleToDelete = await this.roleService.findOneByRoleName(roleName);
+
+            if (user.roles.length > 1) {
+                //User exists?
+                if (!user) {
+                    throw new NotFoundException('NOT_FOUND - User not exists');
+                }
+
+                //Role exists?
+                if (!roleToDelete) {
+                    throw new NotFoundException('NOT_FOUND - Role not exists');
+                }
+
+                //Does the user have that role?
+                if (!user.roles.some(role => role.id === roleToDelete.id)) {
+                    console.log(user.roles);
+                    console.log(roleToDelete);
+                    throw new NotFoundException('NOT_FOUND - The user does not have that role');
+                }
+
+                //Removing the role
+                if (user.roles.some(role => role.id === roleToDelete.id)) {
+                    console.log(user.roles.find(role => role.id === roleToDelete.id));
+                    console.log(roleToDelete)
+                    console.log(user.roles.indexOf(user.roles.find(role => role.id === roleToDelete.id)));
+
+                    const roleIndex = user.roles.indexOf(user.roles.find(role => role.id === roleToDelete.id))
+                    user.roles.splice(roleIndex, 1);
+                    const updatedUser = await this.usersRepository.save(user);
+                    return new UserDto(updatedUser);
+                }
+            }else {
+                throw new HttpException('NOT-ALLOWED - Users must have at least one role, add one before delete.', HttpStatus.CONFLICT)
+            }
+        } catch (e) {
+            throw e;
+        }
+
     }
 
     //Delete a user
