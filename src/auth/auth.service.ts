@@ -33,9 +33,7 @@ export class AuthService {
 
     async login(user: any) {
         //Making sure thar roles are loaded
-        console.log(user.username);
         const userWithRoles = await this.usersService.findUserByUsername(user.username);
-        console.log(userWithRoles.username)
         const payload = {
             username: userWithRoles.username,
             sub: userWithRoles.id,
