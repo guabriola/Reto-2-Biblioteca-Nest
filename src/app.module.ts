@@ -20,6 +20,8 @@ import { User } from './users/entities/user.entity';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { RolesController } from './roles/roles.controller';
+import { AuthController } from './auth/auth.controller';
 
 
 @Module({
@@ -64,6 +66,6 @@ export class AppModule implements NestModule {
     // consumer
     //   .apply(LoggerMiddleware)
     //   .forRoutes({ path: 'songs', method: RequestMethod.POST }); //option no 2
-    consumer.apply(LoggerMiddleware).forRoutes(BooksController, UsersController, ReservationsController); //option no 3
+    consumer.apply(LoggerMiddleware).forRoutes(BooksController, UsersController, ReservationsController, RolesController, AuthController); //option no 3
   }
 }

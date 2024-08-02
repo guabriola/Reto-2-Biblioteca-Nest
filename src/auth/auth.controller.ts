@@ -11,28 +11,29 @@ import { LoginDto } from './dto/loginDto.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-    constructor (private userService: UsersService, private authService: AuthService){}
+  constructor(private userService: UsersService, private authService: AuthService) { }
+  /**
+   * SignUp
+   * */
+  @Public()
+  @Post("signup")
+  signup(@Body() newUser: CreateUserDto): Promise<UserDto> {
+    return this.userService.createUser(newUser);
+  }
 
-    @Public()
-    @Post("signup")
-    signup(@Body() newUser: CreateUserDto) : Promise <UserDto>{
-        return this.userService.createUser(newUser);
-    }
-
-
-    @Public()
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
-    @ApiOperation({ summary: 'Login user and return JWT token' })
-    @ApiBody({
-      description: 'User credentials',
-      type: LoginDto, // Data Transfer Object for Swagger
-    })
-    async login(@Request() req) {
-      return this.authService.login(req.user);
-    }
-    //This is the way before configuring role based authotization
-    // async login(@Body() loginDto: LoginDto) {
-    //   return this.authService.login(loginDto);
-    // }
+  /**
+   * Login
+   * */
+  @Public()
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  @ApiOperation({ summary: 'Login user and return JWT token' })
+  @ApiBody({
+    description: 'User credentials',
+    type: LoginDto, // Data Transfer Object for Swagger
+  })
+  async login(@Request() req) {
+    console.log(req.params)
+    return this.authService.login(req.user);
+  }
 }
