@@ -6,8 +6,9 @@ import { callbackify } from 'util';
 export class LoggerMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
     //Console.log of every CRUD petition
-    console.log(`Request: ${req.method}, ${req.originalUrl}, ${new Date()}`);
-    // console.log(req.body);
+    console.log(`Request: ${req.method}, ${req.originalUrl}, Username: ${req.params.userName}, Role: ${req.params.roleName}, Date: ${new Date()}`);
+    // console.log(req.params);
+    // console.log(res);
     next();
   }
 }
