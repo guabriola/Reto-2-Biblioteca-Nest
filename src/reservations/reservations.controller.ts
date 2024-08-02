@@ -50,7 +50,7 @@ export class ReservationsController {
   @HasRoles('ADMIN')
   @Get()
   findAll(@Req() request: Request): Promise<Reservation[]> {
-    console.log(request.query);
+
     return this.reservationsService.findAll(request.query);
   }
 

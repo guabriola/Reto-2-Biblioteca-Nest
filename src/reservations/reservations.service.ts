@@ -120,16 +120,7 @@ export class ReservationsService {
         endDate: reservation.reservation_endDate,
       }
       ));
-
-      //This another way to doit, is simpler but less efficient.
-      // async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
-      //   const reservations = await this.reservationRepository.find({
-      //     where: { user: { id: parseInt(userId) } },
-      //     relations: ['user', 'book'],
-      //   });
-      //   // console.log(reservations);
-      //   return reservations.map(reservation => (new ReservationDto(reservation)));
-      // }
+      
     } catch (e) {
       throw e;
     }

@@ -24,7 +24,6 @@ export class BooksController {
   @Public()
   @Get()
   findAll(@Req() request: Request): Promise<BookDto[]> {
-    console.log(request.query);
     return this.booksService.findAll(request.query);
   }
 

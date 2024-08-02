@@ -206,17 +206,11 @@ export class UsersService {
 
                 //Does the user have that role?
                 if (!user.roles.some(role => role.id === roleToDelete.id)) {
-                    console.log(user.roles);
-                    console.log(roleToDelete);
                     throw new NotFoundException('NOT_FOUND - The user does not have that role');
                 }
 
                 //Removing the role
                 if (user.roles.some(role => role.id === roleToDelete.id)) {
-                    console.log(user.roles.find(role => role.id === roleToDelete.id));
-                    console.log(roleToDelete)
-                    console.log(user.roles.indexOf(user.roles.find(role => role.id === roleToDelete.id)));
-
                     const roleIndex = user.roles.indexOf(user.roles.find(role => role.id === roleToDelete.id))
                     user.roles.splice(roleIndex, 1);
                     const updatedUser = await this.usersRepository.save(user);

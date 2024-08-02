@@ -33,7 +33,6 @@ export class AuthController {
     type: LoginDto, // Data Transfer Object for Swagger
   })
   async login(@Request() req) {
-    console.log(req.params)
     return this.authService.login(req.user);
   }
 }
