@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { HasRoles } from 'src/common/decorators/has.roles.decorator';
+import { Public } from 'src/common/decorators/public-auth.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -25,7 +26,7 @@ export class UsersController {
     @ApiResponse({ status: 409, description: 'Username or email already exists' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
-    @HasRoles('ADMIN')
+    @Public()
     @Post()
     create(@Body() newUser: CreateUserDto): Promise<UserDto> {
         return this.userService.createUser(newUser);
@@ -79,7 +80,7 @@ export class UsersController {
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiResponse({ status: 200, description: 'The user with id xxxx was updated' })
     @ApiBearerAuth()
-    @HasRoles('ADMIN')
+    @HasRoles('ADMIN', 'USER')
     @Put(':userId')
     update(
         @Param('userId') userId: number,

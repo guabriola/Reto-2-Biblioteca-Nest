@@ -118,6 +118,12 @@ export class UsersService {
 
         try {
 
+            if(newUser.username){
+                return new HttpException({
+                    error: `FORBIDDEN - Username can not be changed`
+                }, HttpStatus.FORBIDDEN)
+            }
+
             const userToUpdate = await this.usersRepository.findOneBy({ id: userId });
             if (!userToUpdate) {
                 return new HttpException({
@@ -137,10 +143,8 @@ export class UsersService {
                     error: `ERROR - Something has happend`
                 }, HttpStatus.BAD_REQUEST)
             }
-
-
+            
             return `The user with id ${userId} was updated`
-
 
         } catch (e) {
             if (e instanceof QueryFailedError) {
