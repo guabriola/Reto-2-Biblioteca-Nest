@@ -4,11 +4,14 @@ import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import helmet from 'helmet';
+import { LoggerService } from './common/services/logger/logger.service';
 
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new LoggerService()
+  });
   app.use(helmet()); // Activate all Helmet protections
   app.setGlobalPrefix('api-lib/v1');
   app.useGlobalPipes(new ValidationPipe());
