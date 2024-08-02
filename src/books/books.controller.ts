@@ -5,13 +5,14 @@ import { Request } from 'express';
 import { BookDto } from './dto/book.dto';
 import { UpdateBookDto } from './dto/updateBook.dto';
 import { CreateBookDto } from './dto/createBook.dto';
-//Custom decorator for publics routes.
 import { Public } from 'src/common/decorators/public-auth.decorator';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { HasRoles } from 'src/common/decorators/has.roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('Books')
 @Controller('books')
-@UseGuards(ThrottlerGuard) //Applying Rate Limiting
+@UseGuards(ThrottlerGuard, RolesGuard) //Applying Rate Limiting And RolesGuard
 export class BooksController {
   constructor(private booksService: BooksService) { }
 
@@ -53,8 +54,10 @@ export class BooksController {
    * Create book
    * */
   @ApiResponse({ status: 403, description: 'Unauthorized'})
+  @ApiResponse({ status: 403, description: 'Forbidden resource'})
   @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @ApiBearerAuth()
+  @HasRoles('ADMIN')
   @Post()
   createBook(@Body() newBook: CreateBookDto): Promise<BookDto> {
     return this.booksService.createBook(newBook);
@@ -67,8 +70,10 @@ export class BooksController {
   @ApiResponse({ status: 304, description: 'Cant delete, the book it is booked by some user.'})
   @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
   @ApiResponse({ status: 403, description: 'Unauthorized'})
+  @ApiResponse({ status: 403, description: 'Forbidden resource'})
   @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @ApiBearerAuth()
+  @HasRoles('ADMIN')
   @Delete(':bookId')
   deleteBook(@Param('bookId') bookId: string): Promise<any> {
     return this.booksService.deleteBook(bookId);
@@ -81,8 +86,10 @@ export class BooksController {
   @ApiResponse({ status: 400, description: 'Bad request, incorrect data'})
   @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
   @ApiResponse({ status: 403, description: 'Unauthorized'})
+  @ApiResponse({ status: 403, description: 'Forbidden resource'})
   @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @ApiBearerAuth()
+  @HasRoles('ADMIN')
   @Put(':bookId')
   updateBook(
     @Param('bookId') bookId: string,

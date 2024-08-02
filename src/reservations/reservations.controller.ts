@@ -8,11 +8,13 @@ import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { CreateReservationDto } from './dto/createReservation.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { HasRoles } from 'src/common/decorators/has.roles.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Reservations')
 @Controller('reservations')
-@UseGuards(ThrottlerGuard) //Applying Rate Limiting
+@UseGuards(ThrottlerGuard, RolesGuard) //Applying Rate Limiting And RolesGuard
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) { }
 
@@ -22,15 +24,19 @@ export class ReservationsController {
   @ApiResponse({ status: 404, description: 'The book was not found'})
   @ApiResponse({ status: 404, description: 'The user was not found'})
   @ApiResponse({ status: 500, description: 'Internal Server Error'})
+  @ApiBearerAuth()
+  @HasRoles('ADMIN', 'USER')
   @Post()
   create(@Body() newReservation: CreateReservationDto): Promise<ReservationDto> {
     return this.reservationsService.create(newReservation);
   }
 
   /**
-   * Get reservation bu reservationId
+   * Get reservation by reservationId
   */
   @ApiResponse({ status: 404, description: 'The reservation with id  doesnt exist'})
+  @ApiBearerAuth()
+  @HasRoles('ADMIN', 'USER')
   @Get(':reservationId')
   findOne(@Param('reservationId') id: string) {
     return this.reservationsService.findReservationById(id);
@@ -40,6 +46,8 @@ export class ReservationsController {
    * Get all reservations
   */
   @ApiResponse({ status: 404, description: 'There are no reservations in the Database'})
+  @ApiBearerAuth()
+  @HasRoles('ADMIN')
   @Get()
   findAll(@Req() request: Request): Promise<Reservation[]> {
     console.log(request.query);
@@ -49,14 +57,18 @@ export class ReservationsController {
   /**
    * Get a reservation by userId
    * */
+  @ApiBearerAuth()
+  @HasRoles('ADMIN', 'USER')
   @Get('/userId/:userId')
   findByUserId(@Param('userId') userId: string): Promise<ReservationDto[]> {
     return this.reservationsService.findReservationByUserId(userId);
   }
 
   /**
-   * Get reservations bu bookID
+   * Get reservations by bookID
    */
+  @ApiBearerAuth()
+  @HasRoles('ADMIN', 'USER')
   @Get('/bookId/:bookId')
   findByBookId(@Param('bookId') bookId: string): Promise<ReservationDto[]> {
     return this.reservationsService.findReservationByBookId(bookId);
@@ -64,7 +76,9 @@ export class ReservationsController {
 
   /**
    * Update reservation
-   */ 
+   */
+  @ApiBearerAuth()
+  @HasRoles('ADMIN', 'USER')
   @Put(':reservationId')
   update(@Param('reservationId') id: string, @Body() updateReservationDto: UpdateReservationDto)
     : Promise<UpdateResult> {
@@ -74,6 +88,8 @@ export class ReservationsController {
   /**
    * Delete Reservation
    */
+  @ApiBearerAuth()
+  @HasRoles('ADMIN', 'USER')
   @Delete(':reservationId')
   deleteReservation(@Param('reservationId') id: string): Promise<any> {
     return this.reservationsService.deleteReservation(id);

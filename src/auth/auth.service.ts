@@ -8,12 +8,12 @@ export class AuthService {
     constructor(
         private usersService: UsersService,
         private jwtService: JwtService
-    ){}
-        
-    async signIn(username: string, pass: string): Promise<any>{
+    ) { }
+
+    async signIn(username: string, pass: string): Promise<any> {
         const userDto = await this.usersService.findUserByUsername(username);
         const user = await this.usersService.findUser(userDto.id);
-        if(user?.password !== pass){//* at the end of the file the user?. it is explained.
+        if (user?.password !== pass) {//* at the end of the file the user?. it is explained.
             throw new UnauthorizedException();
         }
     }
@@ -25,21 +25,25 @@ export class AuthService {
         const unHashedPass = await bcrypt.compare(pass, user.password)
 
         if (user && unHashedPass) {
-          const { password, ...result } = user;
-          return result;
+            const { password, ...result } = user;
+            return result;
         }
         return null;
-      }
-    
+    }
+
     async login(user: any) {
-    const payload = { username: user.username,
-         sub: user.id,
-         //I choose a property name of sub to hold our userId value to be consistent with JWT standards.
-         role: user.role,
+        //Making sure thar roles are loaded
+        console.log(user.username);
+        const userWithRoles = await this.usersService.findUserByUsername(user.username);
+        console.log(userWithRoles.username)
+        const payload = {
+            username: userWithRoles.username,
+            sub: userWithRoles.id,
+            roles: userWithRoles.roles.map(role => role.role),
         };
-    return {
-        access_token: this.jwtService.sign(payload),
-    };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
     }
 }
 

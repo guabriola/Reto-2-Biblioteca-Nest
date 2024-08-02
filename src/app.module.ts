@@ -19,6 +19,7 @@ import { User } from './users/entities/user.entity';
 // import { CustomDateRangeValidator } from './common/validators/customDateVaildators';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 
 @Module({
@@ -46,7 +47,12 @@ import { Role } from './roles/entities/role.entity';
     {
       //These makes the JwtAuth global
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: JwtAuthGuard
+    },
+    {
+      //These makes the RolesGuard global
+      provide: APP_GUARD,
+      useClass: RolesGuard
     },
     InitService,
   ],
