@@ -13,15 +13,15 @@ import { ReservationsController } from './reservations/reservations.controller';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { APP_GUARD } from '@nestjs/core/constants';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core/constants';
 import { InitService } from './common/services/init.services';
 import { User } from './users/entities/user.entity';
-// import { CustomDateRangeValidator } from './common/validators/customDateVaildators';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { RolesController } from './roles/roles.controller';
 import { AuthController } from './auth/auth.controller';
+import { AllExceptionFilter } from './common/errors/all-exceptions.filter';
 
 
 @Module({
@@ -57,6 +57,10 @@ import { AuthController } from './auth/auth.controller';
       useClass: RolesGuard
     },
     InitService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter
+    }
   ],
 })
 export class AppModule implements NestModule {
