@@ -22,6 +22,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { RolesController } from './roles/roles.controller';
 import { AuthController } from './auth/auth.controller';
 import { AllExceptionFilter } from './common/errors/all-exceptions.filter';
+import { LoggerService } from './common/services/logger/logger.service';
 
 
 @Module({
@@ -60,7 +61,8 @@ import { AllExceptionFilter } from './common/errors/all-exceptions.filter';
     {
       provide: APP_FILTER,
       useClass: AllExceptionFilter
-    }
+    },
+    LoggerService,
   ],
 })
 export class AppModule implements NestModule {

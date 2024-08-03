@@ -143,10 +143,16 @@ export class LoggerService {
         this.loggerAll.info(message);
     }
     
-    error(message: string){
+    // error(message: string){
+    //     this.loggerError.error(message);
+    //     this.loggerAll.error(message);
+    // }
+
+    error(error: any){
+        const message = typeof error === 'string' ? error : JSON.stringify(error);
         this.loggerError.error(message);
         this.loggerAll.error(message);
-    }
+      }
     
     warn(message: string){
         this.loggerWarn.warn(message);
