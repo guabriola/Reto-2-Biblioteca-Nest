@@ -63,6 +63,7 @@ import { LoggerService } from './common/services/logger/logger.service';
       useClass: AllExceptionFilter
     },
     LoggerService,
+    
   ],
 })
 export class AppModule implements NestModule {

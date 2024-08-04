@@ -22,10 +22,13 @@ export class AllExceptionFilter extends BaseExceptionFilter {
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
+      const exceptionResponse = exception.getResponse();
       const errorResponse = {
         statusCode: status,
         path: request.url,
         message: exception.message,
+        ...(typeof exceptionResponse === 'object' ? exceptionResponse : { detail: exceptionResponse })
+
       };
 
       // Log the error details

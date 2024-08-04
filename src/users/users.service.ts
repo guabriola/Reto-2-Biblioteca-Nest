@@ -7,6 +7,7 @@ import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
 import { RolesService } from 'src/roles/roles.service';
+import NotFoundError from 'src/common/errors/not-found.exception';
 
 require('dotenv').config();
 
@@ -39,15 +40,14 @@ export class UsersService {
             if (user) {
                 return user;
             } else
-                throw new NotFoundException(`There is no username with id ${userId}`);
-
+                throw new NotFoundError('User', userId.toString())
         } catch (e) {
             throw e;
         }
 
     }
 
-    //Find a user by Id for the controller  - Returns UserDto For authentication
+    //Find a user by Id for the controller  - Returns UserDto
     async findUserById(userId: number): Promise<UserDto> {
 
         try {
@@ -55,8 +55,7 @@ export class UsersService {
             if (user) {
                 return new UserDto(user);
             } else
-                throw new NotFoundException(`There is no username with id ${userId}`);
-
+                throw new NotFoundError('User', userId.toString());
         } catch (e) {
             throw e;
         }
@@ -79,7 +78,7 @@ export class UsersService {
             if (findedUser.length > 0) {
                 return new UserDto(findedUser[0]);
             } else {
-                throw new NotFoundException(`User ${username.toLowerCase()} is not exist.`);
+                throw new NotFoundError('User', username);
             }
 
         } catch (error) {
@@ -118,7 +117,7 @@ export class UsersService {
 
         try {
 
-            if(newUser.username){
+            if (newUser.username) {
                 return new HttpException({
                     error: `FORBIDDEN - Username can not be changed`
                 }, HttpStatus.FORBIDDEN)
@@ -126,9 +125,7 @@ export class UsersService {
 
             const userToUpdate = await this.usersRepository.findOneBy({ id: userId });
             if (!userToUpdate) {
-                return new HttpException({
-                    error: `NOT_FOUND - User not found`
-                }, HttpStatus.NOT_FOUND);
+                throw new NotFoundError('User', userId.toString());
             }
 
             if (newUser.password) {
@@ -143,7 +140,7 @@ export class UsersService {
                     error: `ERROR - Something has happend`
                 }, HttpStatus.BAD_REQUEST)
             }
-            
+
             return `The user with id ${userId} was updated`
 
         } catch (e) {
@@ -169,12 +166,12 @@ export class UsersService {
 
             //User exists?
             if (!user) {
-                throw new NotFoundException('NOT_FOUND - User not exists');
+                throw new NotFoundError('User', username);
             }
 
             //Role exists?
             if (!roleToAdd) {
-                throw new NotFoundException('NOT_FOUND - Role not exists');
+                throw new NotFoundError('Role', roleName);
             }
 
             //Does the user have that role?
@@ -200,12 +197,12 @@ export class UsersService {
             if (user.roles.length > 1) {
                 //User exists?
                 if (!user) {
-                    throw new NotFoundException('NOT_FOUND - User not exists');
+                    throw new NotFoundError('User', username);
                 }
 
                 //Role exists?
                 if (!roleToDelete) {
-                    throw new NotFoundException('NOT_FOUND - Role not exists');
+                    throw new NotFoundError('Role', roleName);
                 }
 
                 //Does the user have that role?
@@ -220,7 +217,7 @@ export class UsersService {
                     const updatedUser = await this.usersRepository.save(user);
                     return new UserDto(updatedUser);
                 }
-            }else {
+            } else {
                 throw new HttpException('NOT-ALLOWED - Users must have at least one role, add one before delete.', HttpStatus.CONFLICT)
             }
         } catch (e) {
@@ -237,13 +234,11 @@ export class UsersService {
             // It can be done like this too --> await this.usersRepository.delete({ id: userId });
 
             if (response.affected != 1) {
-                return new HttpException({
-                    error: `NOT_FOUND - There is not book with id ${userId}`
-                }, HttpStatus.NOT_FOUND)
+                throw new NotFoundError('User id', userId.toString());
             }
 
             if (response.affected == 1) {
-                return `The book with id ${userId} was deleted`;
+                return `The user with id ${userId} was deleted`;
             }
         } catch (e) {
             throw e;
