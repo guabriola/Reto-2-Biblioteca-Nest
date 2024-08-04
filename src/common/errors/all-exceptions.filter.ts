@@ -20,44 +20,95 @@ export class AllExceptionFilter extends BaseExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Internal server error';
-    let errorResponse: any = {
-      statusCode: status,
-      // timestamp: new Date().toISOString(),
-      path: request.url,
-      message,
-    };
-
     if (exception instanceof HttpException) {
-      status = exception.getStatus();
-      message = exception.message;
-      errorResponse = {
+      const status = exception.getStatus();
+      const errorResponse = {
         statusCode: status,
-        // timestamp: new Date().toISOString(),
         path: request.url,
         message: exception.message,
       };
+
+      // Log the error details
+      this.loggerService.error({
+        message: exception.message,
+        path: request.url,
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        params: request.params,
+        query: request.query,
+      });
+
+      response.status(status).json(errorResponse);
+    } else {
+      const status = HttpStatus.INTERNAL_SERVER_ERROR;
+      const message = 'Internal server error';
+      const errorResponse = {
+        statusCode: status,
+        path: request.url,
+        message: message,
+        detail: 'An unexpected error occurred. Please try again later.',
+      };
+
+      // Log the error details with full information
+      this.loggerService.error({
+        message: message,
+        path: request.url,
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        params: request.params,
+        //All exception information for developers
+        exception: exception instanceof Error ? exception.stack : exception,
+      });
+
+      response.status(status).json(errorResponse);
     }
-
-    // Log the error details
-    this.loggerService.error({
-      message: message,
-      path: request.url,
-      // timestamp: new Date().toISOString(),
-      //Data of the request - TODO Check what information it necessary and what is not.
-      method: request.method,
-      headers: request.headers,
-      body: request.body,
-      params: request.params,
-      query: request.query,
-      //exception: exception instanceof Error ? exception.stack : exception,
-      //Delete exception.stack because it was to much information.
-      exception: exception instanceof Error ? exception : exception,
-    });
-
-    response.status(status).json(errorResponse);
   }
+
+
+  // catch(exception: unknown, host: ArgumentsHost) {
+  //   const ctx = host.switchToHttp(); // Because it is a Api REST.
+  //   const response = ctx.getResponse<Response>();
+  //   const request = ctx.getRequest<Request>();
+
+  //   let status = HttpStatus.INTERNAL_SERVER_ERROR;
+  //   let message = 'Internal server error';
+  //   let errorResponse: any = {
+  //     statusCode: status,
+  //     path: request.url,
+  //     message,
+  //   };
+
+  //   if (exception instanceof HttpException) {
+  //     status = exception.getStatus();
+  //     message = exception.message;
+  //     errorResponse = {
+  //       statusCode: status,
+  //       path: request.url,
+  //       message: exception.message,
+  //     };
+  //   }
+
+  //   // Log the error details
+  //   this.loggerService.error({
+  //     message: message,
+  //     path: request.url,
+  //     //Data of the request - complete information of the request
+  //     method: request.method,
+  //     headers: request.headers,
+  //     body: request.body,
+  //     params: request.params,
+  //     query: request.query,
+  //     //All exception information
+  //     exception: exception instanceof Error ? exception.stack : exception,
+
+
+  //     //Less exception information.
+  //     // exception: exception instanceof Error ? exception : exception,
+  //   });
+
+  //   response.status(status).json(errorResponse);
 }
 
 
