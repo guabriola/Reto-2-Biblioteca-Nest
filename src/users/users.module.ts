@@ -10,6 +10,6 @@ import { RolesService } from 'src/roles/roles.service';
   imports: [TypeOrmModule.forFeature([User, Role])], //It's needed to use those repositories on user services. 
   controllers: [UsersController],
   providers: [UsersService, RolesService],
-  exports: [UsersService],//Make init.Service works 
+  exports: [UsersService],//Makes init.Service works 
 })
 export class UsersModule {}

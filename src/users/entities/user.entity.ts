@@ -1,5 +1,5 @@
 import { Reservation } from 'src/reservations/entities/reservation.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable, BeforeUpdate } from 'typeorm';
 import { Role } from 'src/roles/entities/role.entity';
 
 
@@ -65,9 +65,18 @@ export class User {
   })
   roles: Role[];
 
+  @BeforeUpdate()
+  checkUsernameChange() {
+    if (this.username !== this.username) {
+      throw new Error('Username cannot be changed');
+    }
+  }
+
   /**
   * Array of Reservations
   */
   @OneToMany(() => Reservation, bookReservation => bookReservation.user)
   bookReservations: Reservation[];
+
+
 }

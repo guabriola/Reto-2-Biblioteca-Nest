@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
 import { RolesService } from 'src/roles/roles.service';
 import NotFoundError from 'src/common/errors/not-found.exception';
+import { use } from 'passport';
 
 require('dotenv').config();
 
@@ -51,7 +52,12 @@ export class UsersService {
     async findUserById(userId: number): Promise<UserDto> {
 
         try {
-            const user = await this.usersRepository.findOne({ where: { id: userId } });
+            const user = await this.usersRepository.findOne({
+                where: {
+                    id: userId
+                },
+                relations: ['roles']
+                });
             if (user) {
                 return new UserDto(user);
             } else
@@ -117,22 +123,23 @@ export class UsersService {
 
         try {
 
-            if (newUser.username) {
-                return new HttpException({
-                    error: `FORBIDDEN - Username can not be changed`
-                }, HttpStatus.FORBIDDEN)
-            }
+            // if (newUser.username) {
+            //     return new HttpException({
+            //         error: `FORBIDDEN - Username can not be changed`
+            //     }, HttpStatus.FORBIDDEN)
+            // }
 
             const userToUpdate = await this.usersRepository.findOneBy({ id: userId });
+
             if (!userToUpdate) {
-                throw new NotFoundError('User', userId.toString());
+                return new NotFoundError('User', userId.toString());
             }
 
             if (newUser.password) {
                 const salt = await bcrypt.genSalt();
                 newUser.password = await bcrypt.hash(newUser.password, salt);
             }
-
+            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+newUser.email);
             const response = await this.usersRepository.update(userId, newUser);
 
             if (response.affected != 1) {

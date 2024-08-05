@@ -24,7 +24,7 @@ export class AllExceptionFilter extends BaseExceptionFilter {
       const status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
       const errorResponse = {
-        statusCode: status,
+        status: status,
         path: request.url,
         message: exception.message,
         ...(typeof exceptionResponse === 'object' ? exceptionResponse : { detail: exceptionResponse })
@@ -37,7 +37,7 @@ export class AllExceptionFilter extends BaseExceptionFilter {
         path: request.url,
         method: request.method,
         headers: request.headers,
-        body: request.body,
+        // body: request.body,
         params: request.params,
         query: request.query,
       });
@@ -47,7 +47,7 @@ export class AllExceptionFilter extends BaseExceptionFilter {
       const status = HttpStatus.INTERNAL_SERVER_ERROR;
       const message = 'Internal server error';
       const errorResponse = {
-        statusCode: status,
+        status: status,
         path: request.url,
         message: message,
         detail: 'An unexpected error occurred. Please try again later.',
@@ -59,7 +59,7 @@ export class AllExceptionFilter extends BaseExceptionFilter {
         path: request.url,
         method: request.method,
         headers: request.headers,
-        body: request.body,
+        // body: request.body,
         params: request.params,
         //All exception information for developers
         exception: exception instanceof Error ? exception.stack : exception,
