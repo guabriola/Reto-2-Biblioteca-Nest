@@ -13,13 +13,13 @@ export class Reservation {
     /**
     * Array of Users
     */
-    @ManyToOne(()=> User, user => user.bookReservations)
+    @ManyToOne(()=> User, user => user.bookReservations,  { onDelete: 'CASCADE' })
     user: User;
 
     /**
     * Array of Books
     */
-    @ManyToOne(() => Book, book => book.bookReservations)
+    @ManyToOne(() => Book, book => book.bookReservations, { onDelete: 'CASCADE' })
     book: Book;
 
     /**

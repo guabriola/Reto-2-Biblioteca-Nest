@@ -243,16 +243,12 @@ export class UsersService {
             const userToDelete = await this.findUserById(userId);
 
             if (userToDelete) {
-                if ((await this.reservationsService.findReservationByUserId(userId.toString())).length > 0) {
-                    throw new HttpException({
-                        error: `ERROR - User has saved reservations`
-                    }, HttpStatus.CONFLICT)
-                }
+
                 const response = await this.usersRepository.delete(userId);
                 // It can be done like this too --> await this.usersRepository.delete({ id: userId });
 
                 if (response.affected != 1) {
-                    throw new BadRequestException('Server error Try later');
+                    throw new BadRequestException('Server error,  Try later');
                 }
 
                 if (response.affected == 1) {

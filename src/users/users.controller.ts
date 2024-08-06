@@ -6,7 +6,7 @@ import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { RolesGuard, SelfOrAdminGuard } from 'src/auth/guards/roles.guard';
 import { HasRoles } from 'src/common/decorators/has.roles.decorator';
 import { Public } from 'src/common/decorators/public-auth.decorator';
 
@@ -78,6 +78,7 @@ export class UsersController {
 
     /**
     *Update user,
+    *User data can only be updated by the user themselves or by the ADMIN.
     *update one or more values at a time.
     *Username can't be changed
     */
@@ -89,7 +90,8 @@ export class UsersController {
     @ApiResponse({ status: 409, description: 'Username or email already exists' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
-    @HasRoles('ADMIN', 'USER')
+    // @HasRoles('ADMIN', 'USER')
+    @UseGuards(SelfOrAdminGuard)
     @Put(':userId')
     update(
         @Param('userId') userId: number,
@@ -99,6 +101,7 @@ export class UsersController {
 
     /**
     * Delete User
+    * ##Warning - When user is deleted, reservations will be deleted
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 403, description: 'Unauthorized' })

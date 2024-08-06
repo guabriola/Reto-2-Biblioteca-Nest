@@ -67,7 +67,7 @@ export class User {
   /**
   * Array of Reservations
   */
-  @OneToMany(() => Reservation, bookReservation => bookReservation.user)
+  @OneToMany(() => Reservation, bookReservation => bookReservation.user, { cascade: true })
   bookReservations: Reservation[];
 
 
