@@ -1,4 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { REDIRECT_METADATA } from '@nestjs/common/constants';
 import { Reflector } from '@nestjs/core';
 
 
@@ -26,15 +27,16 @@ export class SelfOrAdminGuard implements CanActivate {
   //Guard Checks if is the user or Admin to authorize the oporation.
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest();
-    const user = req.user;
-    const userId = user.userId;
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    console.dir(req.headers.authorization, { depth: null });
-    if (user.roles.includes('ADMIN')) {
+    //Data of authenticated user
+    const authUser = req.user;
+    //UserId provided by the user as URL param. Eg. http://localhost:3000/api-lib/v1/users/3
+    const paramsUserId = req.params.userId;
+
+    if (authUser.roles.includes('ADMIN')) {
       return true;
     }
 
-    if (user.id === parseInt(userId, 10)) {
+    if (authUser.userId === parseInt(paramsUserId, 10)) {
       return true;
     }
 

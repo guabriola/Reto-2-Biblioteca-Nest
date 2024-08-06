@@ -64,7 +64,7 @@ export class BooksController {
 
   /**
    * Delete book
-   * ##Warning - When book is deleted, reservations will be deleted
+   * ##Warning## - When book is deleted, book reservations will be deleted to!
    * */
   @ApiResponse({ status: 200, description: 'The book with id xxx was deleted'})
   @ApiResponse({ status: 304, description: 'Cant delete, the book it is booked by some user.'})

@@ -86,11 +86,11 @@ export class UsersController {
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 403, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'FORBIDDEN - Username can not be changed' })
+    @ApiResponse({ status: 403, description: 'FORBIDDEN - A user can only be updated by user it self or by ADMIN user.' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
     @ApiResponse({ status: 409, description: 'Username or email already exists' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
-    // @HasRoles('ADMIN', 'USER')
     @UseGuards(SelfOrAdminGuard)
     @Put(':userId')
     update(
@@ -101,7 +101,7 @@ export class UsersController {
 
     /**
     * Delete User
-    * ##Warning - When user is deleted, reservations will be deleted
+    * ##Warning## - When user is deleted, user reservations will be deleted to!
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 403, description: 'Unauthorized' })
