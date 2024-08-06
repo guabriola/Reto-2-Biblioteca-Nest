@@ -24,13 +24,15 @@ export class ReservationsService {
   async create(newReservation: CreateReservationDto): Promise<ReservationDto> {
     try {
       const { userId, bookId, startDate, endDate } = newReservation;
-
+      // console.log("NewREservaton!!!!!"+ newReservation);
       const user = await this.userRepository.findOneBy({ id: userId });
+      // console.log("Userrrrr---->"+user)
       if (!user) {
         throw new NotFoundException(`The user with id: ${userId} was not found`);
       }
 
       const book = await this.bookRepository.findOneBy({ id: bookId });
+      // console.log("Boooooook---->"+book)
       if (!book) {
         throw new NotFoundException(`The book with id: ${bookId} was not found`);
       }
@@ -43,11 +45,11 @@ export class ReservationsService {
         startDate,
         endDate,
       });
-
+      // console.log("REservaton!!!!!!!!!!!!!!!!1" + reservation);
       //Here the new reservation is created and save in the DB
       const reservationCreated = await this.reservationRepository.save(reservation);
 
-      // //Only the necessary information should be returned
+      //Only the necessary information should be returned
       return new ReservationDto(reservationCreated);
 
     } catch (e) {
@@ -57,7 +59,7 @@ export class ReservationsService {
       //Si las fechas estan con un mal formato si aparecen la dos, pero no aparecen los
       //errores de id.
       //En resumen los únicos errores que se acumulan y se muestran son los de las fechas. 
-      throw new Error('Error saving reservation');
+      throw e;
     }
   }
 

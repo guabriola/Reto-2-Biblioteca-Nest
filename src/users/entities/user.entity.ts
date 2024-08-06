@@ -32,7 +32,6 @@ export class User {
   * @example MyPass1234!
   */
   @Column()
-  //@Exclude() //I don't want to send the password in the response that is why I - If I do this throws error "password can't be empty when i want to create new user"
   password: string;
 
   /**
@@ -64,13 +63,6 @@ export class User {
     }
   })
   roles: Role[];
-
-  @BeforeUpdate()
-  checkUsernameChange() {
-    if (this.username !== this.username) {
-      throw new Error('Username cannot be changed');
-    }
-  }
 
   /**
   * Array of Reservations

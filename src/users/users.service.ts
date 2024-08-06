@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus, HttpException, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository, UpdateResult } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -8,7 +8,7 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
 import { RolesService } from 'src/roles/roles.service';
 import NotFoundError from 'src/common/errors/not-found.exception';
-import { use } from 'passport';
+import { ReservationsService } from 'src/reservations/reservations.service';
 
 require('dotenv').config();
 
@@ -17,6 +17,7 @@ export class UsersService {
 
     constructor(
         private roleService: RolesService,
+        private reservationsService: ReservationsService,
         @InjectRepository(User) private usersRepository: Repository<User>,
     ) { }
 
@@ -57,7 +58,7 @@ export class UsersService {
                     id: userId
                 },
                 relations: ['roles']
-                });
+            });
             if (user) {
                 return new UserDto(user);
             } else
@@ -123,32 +124,33 @@ export class UsersService {
 
         try {
 
-            // if (newUser.username) {
-            //     return new HttpException({
-            //         error: `FORBIDDEN - Username can not be changed`
-            //     }, HttpStatus.FORBIDDEN)
-            // }
-
             const userToUpdate = await this.usersRepository.findOneBy({ id: userId });
 
             if (!userToUpdate) {
                 return new NotFoundError('User', userId.toString());
-            }
+            } else {
 
-            if (newUser.password) {
-                const salt = await bcrypt.genSalt();
-                newUser.password = await bcrypt.hash(newUser.password, salt);
-            }
-            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+newUser.email);
-            const response = await this.usersRepository.update(userId, newUser);
+                if (newUser.username) {
+                    return new HttpException({
+                        error: `FORBIDDEN - Username can not be changed`
+                    }, HttpStatus.FORBIDDEN)
+                }
 
-            if (response.affected != 1) {
-                return new HttpException({
-                    error: `ERROR - Something has happend`
-                }, HttpStatus.BAD_REQUEST)
-            }
+                if (newUser.password) {
+                    const salt = await bcrypt.genSalt();
+                    newUser.password = await bcrypt.hash(newUser.password, salt);
+                }
 
-            return `The user with id ${userId} was updated`
+                const response = await this.usersRepository.update(userId, newUser);
+
+                if (response.affected != 1) {
+                    return new HttpException({
+                        error: `ERROR - Something has happend`
+                    }, HttpStatus.BAD_REQUEST)
+                }
+
+                return `The user with id ${userId} was updated`
+            }
 
         } catch (e) {
             if (e instanceof QueryFailedError) {
@@ -167,6 +169,7 @@ export class UsersService {
 
     //Add Role
     async addRole(username: string, roleName: string): Promise<UserDto> {
+
         try {
             const user = await this.findUserByUsername(username);
             const roleToAdd = await this.roleService.findOneByRoleName(roleName);
@@ -237,16 +240,26 @@ export class UsersService {
     async deleteUser(userId: number): Promise<any> {
 
         try {
-            const response = await this.usersRepository.delete(userId);
-            // It can be done like this too --> await this.usersRepository.delete({ id: userId });
+            const userToDelete = await this.findUserById(userId);
 
-            if (response.affected != 1) {
-                throw new NotFoundError('User id', userId.toString());
-            }
+            if (userToDelete) {
+                if ((await this.reservationsService.findReservationByUserId(userId.toString())).length > 0) {
+                    throw new HttpException({
+                        error: `ERROR - User has saved reservations`
+                    }, HttpStatus.CONFLICT)
+                }
+                const response = await this.usersRepository.delete(userId);
+                // It can be done like this too --> await this.usersRepository.delete({ id: userId });
 
-            if (response.affected == 1) {
-                return `The user with id ${userId} was deleted`;
-            }
+                if (response.affected != 1) {
+                    throw new BadRequestException('Server error Try later');
+                }
+
+                if (response.affected == 1) {
+                    return `The user with id ${userId} was deleted`;
+                }
+            } else throw new NotFoundError('User id', userId.toString());
+
         } catch (e) {
             throw e;
         }

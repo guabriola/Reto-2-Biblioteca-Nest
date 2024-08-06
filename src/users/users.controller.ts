@@ -81,14 +81,13 @@ export class UsersController {
     *update one or more values at a time.
     *Username can't be changed
     */
-    @ApiResponse({ status: 409, description: 'Username or email already exists' })
-    @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
-    @ApiResponse({ status: 400, description: 'ERROR - Something has happend' })
-    @ApiResponse({ status: 400, description: 'email must be an email' })
-    @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiResponse({ status: 200, description: 'The user with id xxxx was updated' })
+    @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'FORBIDDEN - Username can not be changed' })
+    @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
+    @ApiResponse({ status: 409, description: 'Username or email already exists' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
     @HasRoles('ADMIN', 'USER')
     @Put(':userId')
@@ -104,6 +103,7 @@ export class UsersController {
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 403, description: 'Unauthorized' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
+    @ApiResponse({ status: 409, description: 'User has saved reservations' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
     @HasRoles('ADMIN')
