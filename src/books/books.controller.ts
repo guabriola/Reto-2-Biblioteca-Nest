@@ -67,7 +67,6 @@ export class BooksController {
    * ##Warning## - When book is deleted, book reservations will be deleted to!
    * */
   @ApiResponse({ status: 200, description: 'The book with id xxx was deleted'})
-  @ApiResponse({ status: 304, description: 'Cant delete, the book it is booked by some user.'})
   @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
   @ApiResponse({ status: 403, description: 'Unauthorized'})
   @ApiResponse({ status: 403, description: 'Forbidden resource'})

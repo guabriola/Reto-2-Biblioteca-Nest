@@ -21,12 +21,7 @@ export class BooksService {
       return await this.booksRepository.save(newBook);
       
     } catch (e) {
-      if (e instanceof QueryFailedError) {
-        if (e.driverError.errno = 1062 || e.driverError.code.includes('ER_DUP_ENTRY')) {
-            throw new HttpException('There is a book with the same title.', HttpStatus.CONFLICT);
-        }
-    }
-    throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw e
     }
   }
 
@@ -76,8 +71,8 @@ export class BooksService {
         throw new NotFoundException(`There is no book with title ${title.toLowerCase()}.`);
       }
 
-    } catch (error) {
-      throw error;
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -97,11 +92,9 @@ export class BooksService {
         return `The book with id ${bookId} was deleted`;
       }
 
-      throw new Error("Error, something bad happend");
-
     } catch (e) {
       return new HttpException({
-        error: `Can't delete, the book it is booked by some user.`
+        error: `Can't delete - Try later`
       }, HttpStatus.NOT_MODIFIED)
     }
   }
@@ -121,8 +114,6 @@ export class BooksService {
       if (response.affected == 1) {
         return `The book with id ${bookId} was updated`;
       }
-
-      throw new Error("Error, something bad happend");
 
     } catch (e) {
       return new HttpException({
