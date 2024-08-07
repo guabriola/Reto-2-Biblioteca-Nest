@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { ReservationDto } from './dto/reservation.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Reservation } from './entities/reservation.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository, ReturningStatementNotSupportedError, UpdateResult } from 'typeorm';
 import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Book } from 'src/books/entities/book.entity';
@@ -20,37 +20,64 @@ export class ReservationsService {
     @InjectRepository(Book) private bookRepository: Repository<Book>
   ) { }
 
+  //Check available reservation date for bookId
+  async availableDate(bookId: number, startDate: Date, endDate: Date): Promise<boolean> {
+    const bookIsBooked = await this.reservationRepository
+      .createQueryBuilder('reservation')
+      .where('reservation.bookId = :bookId', { bookId })
+      .andWhere('reservation.startDate <= :endDate', { endDate })
+      .andWhere('reservation.endDate >= :startDate', { startDate })
+      .getCount();
+
+    console.log(bookIsBooked);
+
+    if (bookIsBooked === 0) {
+      return false;
+    } else return true;
+  }
+
   //Create new Reservation
   async create(newReservation: CreateReservationDto): Promise<ReservationDto> {
     try {
       const { userId, bookId, startDate, endDate } = newReservation;
-      // console.log("NewREservaton!!!!!"+ newReservation);
       const user = await this.userRepository.findOneBy({ id: userId });
-      // console.log("Userrrrr---->"+user)
+      const book = await this.bookRepository.findOneBy({ id: bookId });
+      //Verifying if book is booked in that dates.
+      const isBooked = await this.availableDate(
+        newReservation.bookId,
+        newReservation.startDate,
+        newReservation.endDate)
+      let errors:string = "";
+      //User exists?
       if (!user) {
         throw new NotFoundException(`The user with id: ${userId} was not found`);
       }
 
-      const book = await this.bookRepository.findOneBy({ id: bookId });
-      // console.log("Boooooook---->"+book)
+      //Book exists?
       if (!book) {
         throw new NotFoundException(`The book with id: ${bookId} was not found`);
       }
 
-      // Creates a new entity instance and copies all entity properties from this object into a new entity. 
-      // Note that it copies only properties that are present in entity schema.
-      const reservation = this.reservationRepository.create({
-        user,
-        book,
-        startDate,
-        endDate,
-      });
-      // console.log("REservaton!!!!!!!!!!!!!!!!1" + reservation);
-      //Here the new reservation is created and save in the DB
-      const reservationCreated = await this.reservationRepository.save(reservation);
+      if (isBooked) {
+        throw new HttpException('The book is not available for the selected dates',
+          HttpStatus.CONFLICT);
 
-      //Only the necessary information should be returned
-      return new ReservationDto(reservationCreated);
+      } else {
+        // Creates a new entity instance and copies all entity properties from this object into a new entity. 
+        // Note that it copies only properties that are present in entity schema.
+        const reservation = this.reservationRepository.create({
+          user,
+          book,
+          startDate,
+          endDate,
+        });
+
+        //Here the new reservation is created and save in the DB
+        const reservationCreated = await this.reservationRepository.save(reservation);
+
+        //Only the necessary information should be returned
+        return new ReservationDto(reservationCreated);
+      }
 
     } catch (e) {
       todo //El querer crear una nueva reserva:
@@ -122,7 +149,7 @@ export class ReservationsService {
         endDate: reservation.reservation_endDate,
       }
       ));
-      
+
     } catch (e) {
       throw e;
     }

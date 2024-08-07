@@ -7,34 +7,38 @@ import {
   
   @ValidatorConstraint({ name: 'customDateRange', async: false })
   export class CustomDateRangeValidator implements ValidatorConstraintInterface {
+    private errors: string[] = [];
+
     validate(value: any, args: ValidationArguments) {
       const { startDate, endDate } = args.object as any;
-  
+      
       const start = parseISO(startDate);
       const end = parseISO(endDate);
   
       if (!isToday(start) && isBefore(start, new Date())) {
-        return false;
+        this.errors.push("Start day can not be in the past.");
       }
   
       if (isBefore(end, start)) {
-        return false;
+        this.errors.push("End day must be after start day.");
       }
   
       const maxEndDate = addDays(start, 30);
       const minEndDate = addDays(start, 1);
 
       if(isBefore(end,minEndDate)){
-        return false;
+        this.errors.push("Reservation must be at least one day.");
       }
       if (isAfter(end, maxEndDate)) {
-        return false;
+        this.errors.push("Reservation must be maximum thirty days.");
       }
-  
-      return true;
+      console.log(this.errors.length);
+      if(this.errors.length === 0){
+        return true
+      }else return false
     }
-  
+    
     defaultMessage(args: ValidationArguments) {
-      return 'Invalid date range!';
+      return this.errors.join(' ');
     }
   }

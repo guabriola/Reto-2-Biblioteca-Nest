@@ -4,7 +4,7 @@ import { Reservation } from '../entities/reservation.entity';
 export class ReservationDto {
 
     /**
-     * Id of the book of the booking
+     * Id of the booking
      */
     @IsString()
     @IsNotEmpty()
