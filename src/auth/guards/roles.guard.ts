@@ -1,5 +1,4 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { REDIRECT_METADATA } from '@nestjs/common/constants';
 import { Reflector } from '@nestjs/core';
 
 
@@ -40,6 +39,6 @@ export class SelfOrAdminGuard implements CanActivate {
       return true;
     }
 
-    throw new ForbiddenException('A user can only be updated by user it self or by ADMIN user.');
+    throw new ForbiddenException('FORBIDDEN - Only user it self or ADMIN are authorized.');
   }
 }

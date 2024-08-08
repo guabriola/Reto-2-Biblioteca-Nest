@@ -23,7 +23,6 @@ export class UsersController {
     * Create new user
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
     @ApiResponse({ status: 409, description: 'Username or email already exists' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
@@ -37,7 +36,8 @@ export class UsersController {
     * Find all users
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'There are no users in the Database' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
@@ -51,7 +51,8 @@ export class UsersController {
     * Find user by ID
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
@@ -65,7 +66,7 @@ export class UsersController {
     * Find user by username
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
@@ -84,9 +85,10 @@ export class UsersController {
     */
     @ApiResponse({ status: 200, description: 'The user with id xxxx was updated' })
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 403, description: 'FORBIDDEN - Username can not be changed' })
-    @ApiResponse({ status: 403, description: 'FORBIDDEN - A user can only be updated by user it self or by ADMIN user.' })
+    @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
     @ApiResponse({ status: 409, description: 'Username or email already exists' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
@@ -104,7 +106,8 @@ export class UsersController {
     * ##Warning## - When user is deleted, user reservations will be deleted to!
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
     @ApiResponse({ status: 409, description: 'User has saved reservations' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
@@ -120,7 +123,8 @@ export class UsersController {
      * @example ADMIN, USER
      */
     @ApiResponse({ status: 400, description: 'Bad Request' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
     @ApiResponse({ status: 409, description: 'User username already has the role rolename' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
@@ -138,9 +142,10 @@ export class UsersController {
     * Remove Role
     */
     @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
     @ApiResponse({ status: 404, description: 'NOT_FOUND - The user does not have that role' })
-    @ApiResponse({ status: 403, description: 'Unauthorized' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 409, description: 'NOT-ALLOWED - Users must have at least one role, add one before delete.' })
     @ApiBearerAuth()
     @HasRoles('ADMIN')

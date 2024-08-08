@@ -27,7 +27,7 @@ export class ReservationDto {
     readonly userId: number;
 
     /**
-    * Booking end day
+    * Booking start day
     * Date format --> YY/MM/DD
     * @example 2024-06-01
     */
@@ -35,6 +35,11 @@ export class ReservationDto {
     @IsNotEmpty()
     readonly startDate: Date;
 
+    /**
+    * Booking end day
+    * Date format --> YY/MM/DD
+    * @example 2024-06-01
+    */
     @IsDateString()
     @IsNotEmpty()
     readonly endDate: Date;

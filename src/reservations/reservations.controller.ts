@@ -8,8 +8,10 @@ import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { CreateReservationDto } from './dto/createReservation.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { RolesGuard, SelfOrAdminGuard } from 'src/auth/guards/roles.guard';
 import { HasRoles } from 'src/common/decorators/has.roles.decorator';
+import { Public } from 'src/common/decorators/public-auth.decorator';
+import { PublicReservationDto } from './dto/publicRservation.dto';
 
 @ApiBearerAuth()
 @ApiTags('Reservations')
@@ -28,14 +30,15 @@ export class ReservationsController {
     4 - Reservation must be maximum thirty days.
     `,
   })
-  @ApiResponse({ status: 400, description: 'Start day can not be in the past.'})
-  @ApiResponse({ status: 400, description: 'End day must be after start day.'})
-  @ApiResponse({ status: 400, description: 'Reservation must be at least one day.'})
-  @ApiResponse({ status: 400, description: 'Reservation must be maximum thirty days.'})
-  @ApiResponse({ status: 404, description: 'The book was not found'})
-  @ApiResponse({ status: 404, description: 'The user was not found'})
-  @ApiResponse({ status: 409, description: 'The book is not available for the selected dates'})
-  @ApiResponse({ status: 500, description: 'Internal Server Error'})
+  @ApiResponse({ status: 400, description: 'Start day can not be in the past.' })
+  @ApiResponse({ status: 400, description: 'End day must be after start day.' })
+  @ApiResponse({ status: 400, description: 'Reservation must be at least one day.' })
+  @ApiResponse({ status: 400, description: 'Reservation must be maximum thirty days.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'The book was not found' })
+  @ApiResponse({ status: 404, description: 'The user was not found' })
+  @ApiResponse({ status: 409, description: 'The book is not available for the selected dates' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
   @HasRoles('ADMIN', 'USER')
   @Post()
@@ -51,9 +54,12 @@ export class ReservationsController {
     description: `Get reservation by reservationId
     `,
   })
-  @ApiResponse({ status: 404, description: 'The reservation with id  doesnt exist'})
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden resource' })
+  @ApiResponse({ status: 404, description: 'The reservation with id  does not exist' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
-  @HasRoles('ADMIN', 'USER')
+  @HasRoles('ADMIN')
   @Get(':reservationId')
   findOne(@Param('reservationId') id: string) {
     return this.reservationsService.findReservationById(id);
@@ -65,7 +71,10 @@ export class ReservationsController {
   @ApiOperation({
     summary: 'Get all reservations',
   })
-  @ApiResponse({ status: 404, description: 'There are no reservations in the Database'})
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden resource' })
+  @ApiResponse({ status: 404, description: 'There are no reservations in the Database' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
   @HasRoles('ADMIN')
   @Get()
@@ -79,9 +88,15 @@ export class ReservationsController {
    * */
   @ApiOperation({
     summary: 'Get a reservation by userId',
+    description: `Only ADMIN or User it self.`,
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden resource' })
+  @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
+  @ApiResponse({ status: 404, description: 'User does not haver reservations' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
-  @HasRoles('ADMIN', 'USER')
+  @UseGuards(SelfOrAdminGuard)
   @Get('/userId/:userId')
   findByUserId(@Param('userId') userId: string): Promise<ReservationDto[]> {
     return this.reservationsService.findReservationByUserId(userId);
@@ -93,6 +108,10 @@ export class ReservationsController {
   @ApiOperation({
     summary: 'Get reservations by bookID',
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
+  @ApiResponse({ status: 404, description: 'Book does not haver reservations' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
   @HasRoles('ADMIN', 'USER')
   @Get('/bookId/:bookId')
@@ -101,17 +120,42 @@ export class ReservationsController {
   }
 
   /**
+   * Get reservations by bookID for public access
+   */
+  @ApiOperation({
+    summary: 'Get reservations by bookID - Public Access',
+  })
+  @ApiResponse({ status: 404, description: 'Book does not haver reservations' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
+  @ApiBearerAuth()
+  @Public()
+  @Get('/public/bookId/:bookId')
+  publicFindByBookId(@Param('bookId') bookId: string): Promise<PublicReservationDto[]> {
+    return this.reservationsService.findReservationByBookIdPublic(bookId);
+  }
+
+
+  /**
    * Update reservation
    */
   @ApiOperation({
     summary: 'Update reservation',
+    description: `Only ADMIN or User it self can update a reservation.`,
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden resource' })
+  @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
+  @ApiResponse({ status: 404, description: 'The reservation with id 16 does not exist.' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
-  @HasRoles('ADMIN', 'USER')
-  @Put(':reservationId')
-  update(@Param('reservationId') id: string, @Body() updateReservationDto: UpdateReservationDto)
-    : Promise<UpdateResult> {
-    return this.reservationsService.update(id, updateReservationDto);
+  @UseGuards(SelfOrAdminGuard)
+  @Put('userId/:userId/reservationId/:reservationId')
+  update(
+    @Param('userId') userId: string,
+    @Param('reservationId') reservationId: string,
+    @Body() updateReservationDto: UpdateReservationDto)
+    : Promise<any> {
+    return this.reservationsService.update(reservationId, updateReservationDto);
   }
 
   /**
@@ -119,11 +163,20 @@ export class ReservationsController {
    */
   @ApiOperation({
     summary: 'Delete Reservation',
+    description: `Only ADMIN or User it self can delete a reservation.`,
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden resource' })
+  @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
+  @ApiResponse({ status: 404, description: 'The reservation with id 16 does not exist.' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
-  @HasRoles('ADMIN', 'USER')
-  @Delete(':reservationId')
-  deleteReservation(@Param('reservationId') id: string): Promise<any> {
-    return this.reservationsService.deleteReservation(id);
+  @UseGuards(SelfOrAdminGuard)
+  @Delete('userId/:userId/reservationId/:reservationId')
+  deleteReservation(
+    @Param('reservationId') reservationId: string,
+    @Param('userId') userId: string,
+  ): Promise<any> {
+    return this.reservationsService.deleteReservation(reservationId);
   }
 }

@@ -8,6 +8,8 @@ import { User } from 'src/users/entities/user.entity';
 import { Book } from 'src/books/entities/book.entity';
 import { CreateReservationDto } from './dto/createReservation.dto';
 import { todo } from 'node:test';
+import { retry } from 'rxjs';
+import { PublicReservationDto } from './dto/publicRservation.dto';
 
 
 
@@ -47,7 +49,7 @@ export class ReservationsService {
         newReservation.bookId,
         newReservation.startDate,
         newReservation.endDate)
-      let errors:string = "";
+      let errors: string = "";
       //User exists?
       if (!user) {
         throw new NotFoundException(`The user with id: ${userId} was not found`);
@@ -80,12 +82,7 @@ export class ReservationsService {
       }
 
     } catch (e) {
-      todo //El querer crear una nueva reserva:
-      //Si el id de usuario o book no existen da el error bien, pero si estan mal los dos
-      //solo muestra un error.
-      //Si las fechas estan con un mal formato si aparecen la dos, pero no aparecen los
-      //errores de id.
-      //En resumen los únicos errores que se acumulan y se muestran son los de las fechas. 
+      todo //Los errores que se dan por el DTO no se acumulan con los que son lanzados en el service. 
       throw e;
     }
   }
@@ -119,7 +116,7 @@ export class ReservationsService {
       });
 
       if (!findedReservation) {
-        throw new NotFoundException(`The reservation with id ${reservationId} doesn't exist.`);
+        throw new NotFoundException(`The reservation with id ${reservationId} does not exist.`);
       }
       //I build a new constructor on reservationDto in order to be able to return a ReservationDto
       //Other way is with .map
@@ -141,7 +138,7 @@ export class ReservationsService {
         .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
         .getRawMany();
 
-      return reservations.map(reservation => ({
+      reservations.map(reservation => ({
         id: reservation.reservation_id,
         bookId: reservation.bookId,
         userId: reservation.userId,
@@ -150,12 +147,18 @@ export class ReservationsService {
       }
       ));
 
+      if (reservations.length === 0) {
+        throw new NotFoundException(`User does not haver reservations`);
+      } else {
+        return reservations;
+      }
+
     } catch (e) {
       throw e;
     }
   }
 
-  //Find a reservation By bookId
+  //Find a reservation By bookId with complete data
   async findReservationByBookId(bookId: string): Promise<ReservationDto[]> {
     try {
       const reservations = await this.reservationRepository
@@ -166,7 +169,7 @@ export class ReservationsService {
         .select(['reservation.id', 'reservation.startDate', 'reservation.endDate', 'book.id AS bookId', 'user.id AS userId'])
         .getRawMany();
 
-      return reservations.map(reservation => ({
+      reservations.map(reservation => ({
         id: reservation.reservation_id,
         bookId: reservation.bookId,
         userId: reservation.userId,
@@ -174,27 +177,82 @@ export class ReservationsService {
         endDate: reservation.reservation_endDate,
       }
       ));
+
+      if (reservations.length === 0) {
+        throw new NotFoundException(`The book does not haver reservations`);
+      } else {
+        return reservations;
+      }
+
     } catch (e) {
       throw e;
     }
   }
 
-  //Update Reservation -->Id + StartDate + EndDate <--
-  async update(reservationId: string, updateReservation: UpdateReservationDto): Promise<UpdateResult> {
+  // Find a reservation By bookId for public access.
+  async findReservationByBookIdPublic(bookId: string): Promise<PublicReservationDto[]> {
     try {
-      const findedReservation = await this.findReservationById(reservationId);
-      return await this.reservationRepository.update(reservationId, updateReservation);
+      const reservations = await this.reservationRepository
+        .createQueryBuilder('reservation')
+        .leftJoin('reservation.book', 'book')
+        .where('book.id = :bookId', { bookId })
+        .select([
+          'reservation.startDate AS startDate',
+          'reservation.endDate AS endDate'
+        ])
+        .getRawMany();
 
+      console.log(reservations); // Agrega este log para verificar los resultados
+
+      const publicReservations = reservations.map(reservation => new PublicReservationDto({
+        startDate: reservation.startDate,
+        endDate: reservation.endDate,
+      }));
+
+      if (publicReservations.length === 0) {
+        throw new NotFoundException(`The book does not have reservations`);
+      } else {
+        return publicReservations;
+      }
     } catch (e) {
       throw e;
     }
   }
 
-  //Delete Reservation By ID
+  //Update Reservation -->userId (for authorization) + reservationId + StartDate + EndDate <--
+  async update(reservationId: string, updateReservation: UpdateReservationDto): Promise<any> {
+    try {
+      //Check if reservation exists
+      await this.findReservationById(reservationId);
+      
+      const response = await this.reservationRepository.update(reservationId, updateReservation);
+
+      if (response.affected != 1) {
+        throw new HttpException({
+          error: `ERROR - Something has happend`
+        }, HttpStatus.BAD_REQUEST)
+      }
+      return "The reservation was updated";
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  //Delete Reservation By ID -->userId (for authorization) + reservationId
   async deleteReservation(reservationId: string): Promise<any> {
     try {
-      const findedReservation = await this.findReservationById(reservationId);
-      return await this.reservationRepository.delete({ id: parseInt(reservationId) });
+      //Check if reservation exists
+      await this.findReservationById(reservationId);
+
+      const response = await this.reservationRepository.delete({ id: parseInt(reservationId) });
+    
+      if (response.affected != 1) {
+        throw new HttpException({
+          error: `ERROR - Something has happend`
+        }, HttpStatus.BAD_REQUEST)
+      }
+      return "The reservation was deleted";
+    
     } catch (e) {
       throw e;
     }
