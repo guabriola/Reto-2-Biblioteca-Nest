@@ -3,7 +3,6 @@ import { ReservationsService } from './reservations.service';
 import { ReservationDto } from './dto/reservation.dto';
 import { Request } from 'express';
 import { Reservation } from './entities/reservation.entity';
-import { UpdateResult } from 'typeorm';
 import { UpdateReservationDto } from './dto/updateReservation.dto';
 import { CreateReservationDto } from './dto/createReservation.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
