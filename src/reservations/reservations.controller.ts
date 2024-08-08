@@ -21,7 +21,7 @@ export class ReservationsController {
 
   /**
    * Create new reservation
-   * Acces ADMIN USER
+   * Acces ADMIN owner User
    */
   @ApiOperation({
     summary: 'Create new reservation',
@@ -38,15 +38,16 @@ export class ReservationsController {
   @ApiResponse({ status: 400, description: 'Reservation must be at least one day.' })
   @ApiResponse({ status: 400, description: 'Reservation must be maximum thirty days.' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
   @ApiResponse({ status: 404, description: 'The book was not found' })
   @ApiResponse({ status: 404, description: 'The user was not found' })
   @ApiResponse({ status: 409, description: 'The book is not available for the selected dates' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   @ApiBearerAuth()
-  @HasRoles('ADMIN', 'USER')
-  @Post()
-  create(@Body() newReservation: CreateReservationDto): Promise<ReservationDto> {
-    return this.reservationsService.create(newReservation);
+  @UseGuards(SelfOrAdminGuard)
+  @Post('userId/:userId')
+  create(@Param('userId') userId: string, @Body() newReservation: CreateReservationDto): Promise<ReservationDto> {
+    return this.reservationsService.create(userId, newReservation);
   }
 
   /**
@@ -165,7 +166,7 @@ export class ReservationsController {
     @Param('reservationId') reservationId: string,
     @Body() updateReservationDto: UpdateReservationDto)
     : Promise<any> {
-    return this.reservationsService.update(reservationId, updateReservationDto);
+    return this.reservationsService.update(userId, reservationId, updateReservationDto);
   }
 
   /**
@@ -186,9 +187,9 @@ export class ReservationsController {
   @UseGuards(SelfOrAdminGuard)
   @Delete('userId/:userId/reservationId/:reservationId')
   deleteReservation(
-    @Param('reservationId') reservationId: string,
     @Param('userId') userId: string,
+    @Param('reservationId') reservationId: string,
   ): Promise<any> {
-    return this.reservationsService.deleteReservation(reservationId);
+    return this.reservationsService.deleteReservation(userId,reservationId);
   }
 }

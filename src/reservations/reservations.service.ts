@@ -8,7 +8,6 @@ import { User } from 'src/users/entities/user.entity';
 import { Book } from 'src/books/entities/book.entity';
 import { CreateReservationDto } from './dto/createReservation.dto';
 import { todo } from 'node:test';
-import { retry } from 'rxjs';
 import { PublicReservationDto } from './dto/publicRservation.dto';
 
 
@@ -39,46 +38,59 @@ export class ReservationsService {
   }
 
   //Create new Reservation
-  async create(newReservation: CreateReservationDto): Promise<ReservationDto> {
+  async create(paramUserId, newReservation: CreateReservationDto): Promise<ReservationDto> {
     try {
+
       const { userId, bookId, startDate, endDate } = newReservation;
-      const user = await this.userRepository.findOneBy({ id: userId });
-      const book = await this.bookRepository.findOneBy({ id: bookId });
-      //Verifying if book is booked in that dates.
-      const isBooked = await this.availableDate(
-        newReservation.bookId,
-        newReservation.startDate,
-        newReservation.endDate)
-      let errors: string = "";
-      //User exists?
-      if (!user) {
-        throw new NotFoundException(`The user with id: ${userId} was not found`);
-      }
 
-      //Book exists?
-      if (!book) {
-        throw new NotFoundException(`The book with id: ${bookId} was not found`);
-      }
+      //Checks if the userId in Params() is the same of the reservation.
+      if (paramUserId == newReservation.userId) {
 
-      if (isBooked) {
-        throw new HttpException('The book is not available for the selected dates',
-          HttpStatus.CONFLICT);
+        const user = await this.userRepository.findOneBy({ id: userId });
+        const book = await this.bookRepository.findOneBy({ id: bookId });
+        //Verifying if book is booked in that dates.
+        const isBooked = await this.availableDate(
+          newReservation.bookId,
+          newReservation.startDate,
+          newReservation.endDate)
+        let errors: string = "";
+        //User exists?
+        if (!user) {
+          throw new NotFoundException(`The user with id: ${userId} was not found`);
+        }
+
+        //Book exists?
+        if (!book) {
+          throw new NotFoundException(`The book with id: ${bookId} was not found`);
+        }
+
+        if (isBooked) {
+          throw new HttpException('The book is not available for the selected dates',
+            HttpStatus.CONFLICT);
+
+        } else {
+          // Creates a new entity instance and copies all entity properties from this object into a new entity. 
+          // Note that it copies only properties that are present in entity schema.
+          const reservation = this.reservationRepository.create({
+            user,
+            book,
+            startDate,
+            endDate,
+          });
+
+          //Here the new reservation is created and save in the DB
+          const reservationCreated = await this.reservationRepository.save(reservation);
+
+          //Only the necessary information should be returned
+          return new ReservationDto(reservationCreated);
+        }
 
       } else {
-        // Creates a new entity instance and copies all entity properties from this object into a new entity. 
-        // Note that it copies only properties that are present in entity schema.
-        const reservation = this.reservationRepository.create({
-          user,
-          book,
-          startDate,
-          endDate,
-        });
-
-        //Here the new reservation is created and save in the DB
-        const reservationCreated = await this.reservationRepository.save(reservation);
-
-        //Only the necessary information should be returned
-        return new ReservationDto(reservationCreated);
+        //This exception is not the same of the SelfOrAdminGuard.
+        //Checks if the userId of Params is the same that it intended to operate.
+        throw new HttpException({
+          error: `FORBIDDEN - Only user it self or ADMIN are authorized.`
+        }, HttpStatus.FORBIDDEN)
       }
 
     } catch (e) {
@@ -220,39 +232,56 @@ export class ReservationsService {
   }
 
   //Update Reservation -->userId (for authorization) + reservationId + StartDate + EndDate <--
-  async update(reservationId: string, updateReservation: UpdateReservationDto): Promise<any> {
+  async update(userId: string, reservationId: string, updateReservation: UpdateReservationDto): Promise<any> {
     try {
-      //Check if reservation exists
-      await this.findReservationById(reservationId);
+      //Checks if reservation exists
+      const reservationToUpdate = await this.findReservationById(reservationId);
 
-      const response = await this.reservationRepository.update(reservationId, updateReservation);
+      //Checks if the userId in Params() is the same of the reservation.
+      if (userId == reservationToUpdate.userId.toString()) {
+        const response = await this.reservationRepository.update(reservationId, updateReservation);
 
-      if (response.affected != 1) {
+        if (response.affected != 1) {
+          throw new HttpException({
+            error: `ERROR - Something has happend`
+          }, HttpStatus.BAD_REQUEST)
+        }
+        return "The reservation was updated";
+      } else {
+        //This exception is not the same of the SelfOrAdminGuard.
+        //Checks if the userId of Params is the same that it intended to operate.
         throw new HttpException({
-          error: `ERROR - Something has happend`
-        }, HttpStatus.BAD_REQUEST)
+          error: `FORBIDDEN - Only user it self or ADMIN are authorized.`
+        }, HttpStatus.FORBIDDEN)
       }
-      return "The reservation was updated";
     } catch (e) {
       throw e;
     }
   }
 
   //Delete Reservation By ID -->userId (for authorization) + reservationId
-  async deleteReservation(reservationId: string): Promise<any> {
+  async deleteReservation(userId: string, reservationId: string): Promise<any> {
     try {
-      //Check if reservation exists
-      await this.findReservationById(reservationId);
+      //Checks if reservation exists
+      const reservationToUpdate = await this.findReservationById(reservationId);
 
-      const response = await this.reservationRepository.delete({ id: parseInt(reservationId) });
-    
-      if (response.affected != 1) {
+      //Checks if the userId in Params() is the same of the reservation.
+      if (userId == reservationToUpdate.userId.toString()) {
+        const response = await this.reservationRepository.delete({ id: parseInt(reservationId) });
+
+        if (response.affected != 1) {
+          //This exception is not the same of the SelfOrAdminGuard.
+          //Checks if the userId of Params is the same that it intended to operate.
+          throw new HttpException({
+            error: `ERROR - Something has happend`
+          }, HttpStatus.BAD_REQUEST)
+        }
+        return "The reservation was deleted.";
+      } else {
         throw new HttpException({
-          error: `ERROR - Something has happend`
-        }, HttpStatus.BAD_REQUEST)
+          error: `FORBIDDEN - Only user it self or ADMIN are authorized.`
+        }, HttpStatus.FORBIDDEN)
       }
-      return "The reservation was deleted.";
-    
     } catch (e) {
       throw e;
     }
