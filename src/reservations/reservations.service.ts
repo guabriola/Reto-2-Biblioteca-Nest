@@ -224,7 +224,7 @@ export class ReservationsService {
     try {
       //Check if reservation exists
       await this.findReservationById(reservationId);
-      
+
       const response = await this.reservationRepository.update(reservationId, updateReservation);
 
       if (response.affected != 1) {
@@ -251,7 +251,7 @@ export class ReservationsService {
           error: `ERROR - Something has happend`
         }, HttpStatus.BAD_REQUEST)
       }
-      return "The reservation was deleted";
+      return "The reservation was deleted.";
     
     } catch (e) {
       throw e;

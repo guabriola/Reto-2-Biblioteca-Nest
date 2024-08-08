@@ -19,6 +19,10 @@ import { PublicReservationDto } from './dto/publicRservation.dto';
 export class ReservationsController {
   constructor(private reservationsService: ReservationsService) { }
 
+  /**
+   * Create new reservation
+   * Acces ADMIN USER
+   */
   @ApiOperation({
     summary: 'Create new reservation',
     description: `
@@ -47,6 +51,7 @@ export class ReservationsController {
 
   /**
    * Get reservation by reservationId
+   * Acces ADMIN 
   */
   @ApiOperation({
     summary: 'Get reservation by reservationId',
@@ -66,6 +71,7 @@ export class ReservationsController {
 
   /**
    * Get all reservations
+   * Acces ADMIN
   */
   @ApiOperation({
     summary: 'Get all reservations',
@@ -84,6 +90,7 @@ export class ReservationsController {
 
   /**
    * Get a reservation by userId
+   * Acces ADMIN User owner
    * */
   @ApiOperation({
     summary: 'Get a reservation by userId',
@@ -103,6 +110,7 @@ export class ReservationsController {
 
   /**
    * Get reservations by bookID
+   * Acces ADMIN USER
    */
   @ApiOperation({
     summary: 'Get reservations by bookID',
@@ -119,7 +127,8 @@ export class ReservationsController {
   }
 
   /**
-   * Get reservations by bookID for public access
+   * Get reservations by bookID
+   * Public access
    */
   @ApiOperation({
     summary: 'Get reservations by bookID - Public Access',
@@ -136,11 +145,13 @@ export class ReservationsController {
 
   /**
    * Update reservation
+   * Acces ADMIN USER owner
    */
   @ApiOperation({
     summary: 'Update reservation',
     description: `Only ADMIN or User it self can update a reservation.`,
   })
+  @ApiResponse({ status: 200, description: 'The reservation was updated.' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
@@ -159,11 +170,13 @@ export class ReservationsController {
 
   /**
    * Delete Reservation
+   * Acces ADMIN USER owner
    */
   @ApiOperation({
     summary: 'Delete Reservation',
     description: `Only ADMIN or User it self can delete a reservation.`,
   })
+  @ApiResponse({ status: 200, description: 'The reservation was deleted.' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
