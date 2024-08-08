@@ -30,8 +30,6 @@ export class ReservationsService {
       .andWhere('reservation.endDate >= :startDate', { startDate })
       .getCount();
 
-    console.log(bookIsBooked);
-
     if (bookIsBooked === 0) {
       return false;
     } else return true;
@@ -213,8 +211,6 @@ export class ReservationsService {
           'reservation.endDate AS endDate'
         ])
         .getRawMany();
-
-      console.log(reservations); // Agrega este log para verificar los resultados
 
       const publicReservations = reservations.map(reservation => new PublicReservationDto({
         startDate: reservation.startDate,

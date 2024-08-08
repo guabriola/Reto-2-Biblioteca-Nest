@@ -32,7 +32,7 @@ import {
       if (isAfter(end, maxEndDate)) {
         this.errors.push("Reservation must be maximum thirty days.");
       }
-      console.log(this.errors.length);
+
       if(this.errors.length === 0){
         return true
       }else return false
