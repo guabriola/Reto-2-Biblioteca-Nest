@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesGuard, SelfOrAdminGuard } from 'src/auth/guards/roles.guard';
 import { HasRoles } from 'src/common/decorators/has.roles.decorator';
 import { Public } from 'src/common/decorators/public-auth.decorator';
@@ -22,6 +22,9 @@ export class UsersController {
     /**
     * Create new user
     */
+    @ApiOperation({
+        summary: 'Create New User - ADMIN Access',
+      })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 409, description: 'Username or email already exists' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
@@ -35,6 +38,9 @@ export class UsersController {
     /**
     * Find all users
     */
+    @ApiOperation({
+        summary: 'Find all users - ADMIN Access',
+      })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -50,6 +56,9 @@ export class UsersController {
     /**
     * Find user by ID
     */
+    @ApiOperation({
+        summary: 'Find user by ID - ADMIN Access',
+      })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -65,6 +74,9 @@ export class UsersController {
     /**
     * Find user by username
     */
+    @ApiOperation({
+        summary: 'Find user by username - ADMIN Access',
+      })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -79,10 +91,16 @@ export class UsersController {
 
     /**
     *Update user,
-    *User data can only be updated by the user themselves or by the ADMIN.
-    *update one or more values at a time.
-    *Username can't be changed
     */
+    @ApiOperation({
+        summary: 'Update user - Admin or user itself access.',
+        description: `
+        Rules:
+        1 - User data can only be updated by the user themselves or by the ADMIN.\n
+        2 - Can update one or more values at a time.\n
+        3 - Username can't be changed
+        `,
+      })
     @ApiResponse({ status: 200, description: 'The user with id xxxx was updated' })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -103,8 +121,13 @@ export class UsersController {
 
     /**
     * Delete User
-    * ##Warning## - When user is deleted, user reservations will be deleted to!
     */
+    @ApiOperation({
+        summary: 'Delete User - ADMIN Access',
+        description: `
+        ##Warning##
+        When user is deleted, user reservations will be deleted to!`,
+      })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -120,8 +143,11 @@ export class UsersController {
 
     /**
      * Add Role
-     * @example ADMIN, USER
      */
+    @ApiOperation({
+        summary: 'Add Role - ADMIN Access',
+        description: `ADMIN or USER`,
+      })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -141,6 +167,10 @@ export class UsersController {
     /** 
     * Remove Role
     */
+    @ApiOperation({
+        summary: 'Remove Role - ADMIN Access',
+        description: `User must have at least one role.`,
+      })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })

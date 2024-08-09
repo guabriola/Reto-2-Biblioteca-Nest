@@ -2,7 +2,7 @@ import { Injectable, HttpStatus, HttpException, InternalServerErrorException, No
 import { BookDto } from './dto/book.dto';
 import { Book } from './book.class';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueryFailedError, Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UpdateBookDto } from './dto/updateBook.dto';
 import { CreateBookDto } from './dto/createBook.dto';
 

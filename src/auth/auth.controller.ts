@@ -15,6 +15,9 @@ export class AuthController {
   /**
    * SignUp
    * */
+  @ApiOperation({
+    summary: 'SignUp new user - Public Access',
+  })
   @Public()
   @Post("signup")
   signup(@Body() newUser: CreateUserDto): Promise<UserDto> {
@@ -24,10 +27,10 @@ export class AuthController {
   /**
    * Login
    * */
+  @ApiOperation({ summary: 'Login user and return JWT token - Public Access' })
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  @ApiOperation({ summary: 'Login user and return JWT token' })
   @ApiBody({
     description: 'User credentials',
     type: LoginDto, // Data Transfer Object for Swagger

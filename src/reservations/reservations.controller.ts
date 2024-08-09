@@ -21,10 +21,9 @@ export class ReservationsController {
 
   /**
    * Create new reservation
-   * Acces ADMIN owner User
    */
   @ApiOperation({
-    summary: 'Create new reservation',
+    summary: 'Create new reservation - ADMIN or owner user access.',
     description: `
     Rules:
     1 - Start day can not be in the past.\n
@@ -51,11 +50,10 @@ export class ReservationsController {
   }
 
   /**
-   * Get reservation by reservationId
-   * Acces ADMIN 
+   * Get reservation by reservationId 
   */
   @ApiOperation({
-    summary: 'Get reservation by reservationId',
+    summary: 'Get reservation by reservationId - ADMIN Access ',
     description: `Get reservation by reservationId
     `,
   })
@@ -72,10 +70,9 @@ export class ReservationsController {
 
   /**
    * Get all reservations
-   * Acces ADMIN
   */
   @ApiOperation({
-    summary: 'Get all reservations',
+    summary: 'Get all reservations - ADMIN Access ',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -91,10 +88,9 @@ export class ReservationsController {
 
   /**
    * Get a reservation by userId
-   * Acces ADMIN User owner
-   * */
+   */
   @ApiOperation({
-    summary: 'Get a reservation by userId',
+    summary: 'Get a reservation by userId - ADMIN or user owner access',
     description: `Only ADMIN or User it self.`,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -111,10 +107,9 @@ export class ReservationsController {
 
   /**
    * Get reservations by bookID
-   * Acces ADMIN USER
    */
   @ApiOperation({
-    summary: 'Get reservations by bookID',
+    summary: 'Get reservations by bookID - ADMIN or User access',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
@@ -129,7 +124,6 @@ export class ReservationsController {
 
   /**
    * Get reservations by bookID
-   * Public access
    */
   @ApiOperation({
     summary: 'Get reservations by bookID - Public Access',
@@ -146,10 +140,9 @@ export class ReservationsController {
 
   /**
    * Update reservation
-   * Acces ADMIN USER owner
    */
   @ApiOperation({
-    summary: 'Update reservation',
+    summary: 'Update reservation - ADMIN or user owner access.',
     description: `Only ADMIN or User it self can update a reservation.`,
   })
   @ApiResponse({ status: 200, description: 'The reservation was updated.' })
@@ -171,10 +164,9 @@ export class ReservationsController {
 
   /**
    * Delete Reservation
-   * Acces ADMIN USER owner
    */
   @ApiOperation({
-    summary: 'Delete Reservation',
+    summary: 'Delete Reservation - ADMIN or user owner access.',
     description: `Only ADMIN or User it self can delete a reservation.`,
   })
   @ApiResponse({ status: 200, description: 'The reservation was deleted.' })

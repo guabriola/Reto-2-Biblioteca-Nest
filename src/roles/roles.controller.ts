@@ -3,12 +3,13 @@ import { RolesService } from './roles.service';
 import { Role } from './entities/role.entity';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { HasRoles } from 'src/common/decorators/has.roles.decorator';
 
 //For this project the only roles will be ADMIN and USER - If is neccesary have another 
 //role it must be done by the developer.
 //IF in the future is necesary, it can be add POST PUT and Delete controllers.
+@ApiTags('Roles')
 @UseGuards(ThrottlerGuard, RolesGuard) //Applying Rate Limiting And RolesGuard
 @Controller('roles')
 export class RolesController {
@@ -16,8 +17,10 @@ export class RolesController {
 
   /**
    * Find all Roles
-   * @returns Roles Array
    */
+  @ApiOperation({
+    summary: 'Find all Roles - Access ADMIN',
+  })
   @ApiBearerAuth()
   @HasRoles('ADMIN')
   @Get()
@@ -27,9 +30,10 @@ export class RolesController {
 
   /**
    * Find Role By ID
-   * @param id 
-   * @returns 
    */
+  @ApiOperation({
+    summary: 'Find Role By ID - Access ADMIN',
+  })
   @ApiBearerAuth()
   @HasRoles('ADMIN')
   @Get(':id')
@@ -38,10 +42,11 @@ export class RolesController {
   }
 
   /**
-   * Finde Role by role name
-   * @param roleName 
-   * @returns 
+   * Find Role by role name
    */
+  @ApiOperation({
+    summary: 'Find Role by role name - Access ADMIN',
+  })
   @ApiBearerAuth()
   @HasRoles('ADMIN')
   @Get('/byRoleName/:roleName')
