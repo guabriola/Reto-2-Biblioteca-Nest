@@ -14,7 +14,17 @@ describe('UsersController', () => {
         {
           provide: UsersService,
           //Moking user service
-          useValue: {},
+          useValue: {
+            findAll: jest 
+              .fn()
+              .mockResolvedValue([{
+                id: '1',
+                username: 'admin',
+                email: 'admin@admin.com',
+                name: 'ADMIN',
+                lastName: 'ADMIN'
+              }]),
+          },
         },
       ],
     })
@@ -31,4 +41,17 @@ describe('UsersController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('getUsers', () => {
+    it('Shoud find all the users', async() => {
+      const users = await controller.findAll();
+      expect(users).toEqual([{
+        id: '1',
+        username: 'admin',
+        email: 'admin@admin.com',
+        name: 'ADMIN',
+        lastName: 'ADMIN'
+      }])
+    })
+  })
 });

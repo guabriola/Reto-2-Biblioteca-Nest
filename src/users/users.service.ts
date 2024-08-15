@@ -22,7 +22,7 @@ export class UsersService {
     ) { }
 
     //Find all users
-    async findAll(params): Promise<UserDto[]> {
+    async findAll(): Promise<UserDto[]> {
         try {
             const users = await this.usersRepository.find();
             if (users.length > 0) {

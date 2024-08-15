@@ -49,8 +49,8 @@ export class UsersController {
     @ApiBearerAuth()
     @HasRoles('ADMIN')
     @Get()
-    findAll(@Req() request: Request): Promise<UserDto[]> {
-        return this.userService.findAll(request.query);
+    findAll(): Promise<UserDto[]> {
+        return this.userService.findAll();
     }
 
     /**
