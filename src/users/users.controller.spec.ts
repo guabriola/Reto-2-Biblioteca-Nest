@@ -4,7 +4,8 @@ import { UsersService } from './users.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { UserDto } from './dto/user.dto';
 import { Role } from 'src/roles/entities/role.entity';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { constants } from 'node:buffer';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -29,7 +30,7 @@ describe('UsersController', () => {
     email: 'admin@admin.com',
     name: 'ADMIN',
     lastName: 'ADMIN',
-    roles: [ roleAdmin, roleUser],
+    roles: [roleAdmin, roleUser],
   };
 
   beforeEach(async () => {
@@ -42,7 +43,8 @@ describe('UsersController', () => {
           provide: UsersService,
           useValue: {
             findUserByUsername: jest.fn(),
-            findOneById: jest.fn(),
+            findUserById: jest.fn(),
+            findAll: jest.fn(),
           },
         },
       ],
@@ -57,14 +59,14 @@ describe('UsersController', () => {
     usersService = module.get<UsersService>(UsersService);
   });
 
-  it('should be defined', () => {
+  it('Should be defined', () => {
     expect(controller).toBeDefined();
   });
 
   describe('Find user by id', () => {
 
     //Find user by username
-    it('should return user data when username is found', async () => {
+    it('Should return user data when username is found', async () => {
       jest.spyOn(usersService, 'findUserById').mockResolvedValue(userDto);
 
       const result = await controller.findOneById(1);
@@ -72,14 +74,14 @@ describe('UsersController', () => {
     });
 
     //NotFoundException
-    it('should throw NotFoundException when username is not found', async () => {
+    it('Should throw NotFoundException when username is not found', async () => {
       jest.spyOn(usersService, 'findUserById').mockRejectedValue(new NotFoundException());
 
       await expect(controller.findOneById(1)).rejects.toThrow(NotFoundException);
     });
-    
+
     //ForbiddenException
-    it('should throw ForbiddenException if the user lacks the required role', async () => {
+    it('Should throw ForbiddenException if the user lacks the required role', async () => {
       jest.spyOn(usersService, 'findUserById').mockRejectedValue(new ForbiddenException());
 
       await expect(controller.findOneById(1)).rejects.toThrow(ForbiddenException);
@@ -90,27 +92,58 @@ describe('UsersController', () => {
   describe('Find user by username', () => {
 
     //Find user by username
-    it('should return user data when username is found', async () => {
+    it('Should return user data when username is found', async () => {
       jest.spyOn(usersService, 'findUserByUsername').mockResolvedValue(userDto);
-
       const result = await controller.findByUsername('admin');
       expect(result).toEqual(userDto);
     });
 
     //NotFoundException
-    it('should throw NotFoundException when username is not found', async () => {
+    it('Should throw NotFoundException when username is not found', async () => {
       jest.spyOn(usersService, 'findUserByUsername').mockRejectedValue(new NotFoundException());
-
       await expect(controller.findByUsername('nonexistentuser')).rejects.toThrow(NotFoundException);
     });
     
-    //ForbiddenException
-    it('should throw ForbiddenException if the user lacks the required role', async () => {
-      jest.spyOn(usersService, 'findUserByUsername').mockRejectedValue(new ForbiddenException());
+    //Unauthorized
+    it('Should throw Unauthorizedn if the user is not loged', async () => {
+      jest.spyOn(usersService, 'findUserByUsername').mockRejectedValue(new UnauthorizedException());
+      await expect(controller.findByUsername('user')).rejects.toThrow(UnauthorizedException);
+    });
 
+    //ForbiddenException
+    it('Should throw ForbiddenException if the user lacks the required role', async () => {
+      jest.spyOn(usersService, 'findUserByUsername').mockRejectedValue(new ForbiddenException());
       await expect(controller.findByUsername('user')).rejects.toThrow(ForbiddenException);
     });
 
   })
 
+
+  describe('Find all users', () => {
+
+    //Find all users
+    it('Should find all users', async () => {
+      jest.spyOn(usersService, 'findAll').mockResolvedValue([userDto]);
+      const result = await controller.findAll();
+      expect(result).toEqual([userDto])
+    })
+
+    //NotFoundException
+    it('Should throw NotFoundException when there are no users', async () => {
+      jest.spyOn(usersService, 'findAll').mockRejectedValue(new NotFoundException());
+      await expect(controller.findAll()).rejects.toThrow(NotFoundException);
+    });
+
+    //Unauthorized
+    it('Should throw Unauthorizedn if the user is not loged', async () => {
+      jest.spyOn(usersService, 'findAll').mockRejectedValue(new UnauthorizedException());
+      await expect(controller.findAll()).rejects.toThrow(UnauthorizedException);
+    });
+
+    //ForbiddenException
+    it('Should throw ForbiddenException if the user lacks the required role', async () => {
+      jest.spyOn(usersService, 'findAll').mockRejectedValue(new ForbiddenException());
+      await expect(controller.findAll()).rejects.toThrow(ForbiddenException);
+    });
+  })
 });
