@@ -80,7 +80,7 @@ export class CreateUserDto {
             this.password = createUserDto.password;
             this.name = createUserDto.name;
             this.lastName = createUserDto.lastName;
-            this.roles = createUserDto.roles;
+            // this.roles = createUserDto.roles;
         }
     }
 }

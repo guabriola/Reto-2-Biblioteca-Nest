@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { UsersService } from './users.service';
-import { Request } from 'express';
 import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -108,7 +107,7 @@ export class UsersController {
     @ApiResponse({ status: 403, description: 'FORBIDDEN - Username can not be changed' })
     @ApiResponse({ status: 403, description: 'FORBIDDEN - Only user it self or ADMIN are authorized.' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
-    @ApiResponse({ status: 409, description: 'Username or email already exists' })
+    @ApiResponse({ status: 409, description: 'Email already exists' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @ApiBearerAuth()
     @UseGuards(SelfOrAdminGuard)
@@ -128,6 +127,7 @@ export class UsersController {
         ##Warning##
         When user is deleted, user reservations will be deleted to!`,
       })
+    @ApiResponse({ status: 200, description: 'The user with id xxxx was updated' })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })

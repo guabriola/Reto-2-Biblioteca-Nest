@@ -68,13 +68,13 @@ export class UpdateUserDto {
     @IsOptional()
     lastName: string;
 
-    /**
-    * VALUE IS OPTIONAL 
-    * Roles of user 
-    * @example ADMIN, USER
-    */
-    @IsOptional()
-    @IsArray()
-    roles: Role[];
+    // /**
+    // * VALUE IS OPTIONAL 
+    // * Roles of user 
+    // * @example ADMIN, USER
+    // */
+    // @IsOptional()
+    // @IsArray()
+    // roles: Role[];
 
 }
