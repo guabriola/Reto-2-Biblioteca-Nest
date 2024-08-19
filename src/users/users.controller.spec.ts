@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { UserDto } from './dto/user.dto';
 import { Role } from 'src/roles/entities/role.entity';
-import { ConflictException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 
@@ -61,7 +61,7 @@ describe('UsersController', () => {
       controllers: [UsersController],
       providers: [
         {
-          //Moking user service
+          //Moking users service
           provide: UsersService,
           useValue: {
             findUserByUsername: jest.fn(),
@@ -119,6 +119,15 @@ describe('UsersController', () => {
       await expect(controller.findOneById(1)).rejects.toThrow(ForbiddenException);
 
       //Verify that findUserById it is called with 1 as argument
+      expect(usersService.findUserById).toHaveBeenCalledWith(1);
+    });
+
+    //BadRequestException
+    it('Should throw BadRequestException when id is not number string', async () => {
+      jest.spyOn(usersService, 'findUserById').mockRejectedValue(new BadRequestException());
+      await expect(controller.findOneById(1)).rejects.toThrow(BadRequestException);
+
+      //Verify that findUserById it is called with correct argument.
       expect(usersService.findUserById).toHaveBeenCalledWith(1);
     });
 
@@ -220,6 +229,7 @@ describe('UsersController', () => {
     });
   });
 
+
   //Update a user
   describe('Update a user', () => {
 
@@ -263,6 +273,15 @@ describe('UsersController', () => {
       await expect(controller.update(7, updateUserDto)).rejects.toThrow(ConflictException);
       expect(usersService.updateUser).toHaveBeenCalledWith(userId, updateUserDto);
     })
+
+    //BadRequestException
+    it('Should throw BadRequestException when id is not number string', async () => {
+      jest.spyOn(usersService, 'updateUser').mockRejectedValue(new BadRequestException());
+      await expect(controller.update(7, updateUserDto)).rejects.toThrow(BadRequestException);
+
+      //Verify that updateUser it is called with valid argument
+      expect(usersService.updateUser).toHaveBeenCalledWith(7, updateUserDto);
+    });
   })
 
   //Delete user
@@ -295,6 +314,16 @@ describe('UsersController', () => {
 
       jest.spyOn(usersService, 'deleteUser').mockRejectedValue(new ForbiddenException());
       await expect(controller.delete(userId)).rejects.toThrow(ForbiddenException);
+      expect(usersService.deleteUser).toHaveBeenCalledWith(userId);
+    });
+
+    //BadRequestException
+    it('Should throw BadRequestException when id is not number string', async () => {
+      const userId = 7;
+      jest.spyOn(usersService, 'deleteUser').mockRejectedValue(new BadRequestException());
+      await expect(controller.delete(userId)).rejects.toThrow(BadRequestException);
+
+      //Verify that it is called with valid argument
       expect(usersService.deleteUser).toHaveBeenCalledWith(userId);
     });
 

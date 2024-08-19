@@ -26,7 +26,7 @@ export class BooksService {
   }
 
   //Find all books
-  async findAll(params): Promise<Book[]> {
+  async findAll(): Promise<Book[]> {
     try {
       const books = await this.booksRepository.find();
       if (books.length > 0) {

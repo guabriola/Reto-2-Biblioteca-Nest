@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { BooksService } from './books.service';
-import { Request } from 'express';
 import { BookDto } from './dto/book.dto';
 import { UpdateBookDto } from './dto/updateBook.dto';
 import { CreateBookDto } from './dto/createBook.dto';
@@ -27,8 +26,8 @@ export class BooksController {
   @ApiResponse({ status: 404, description: 'NOT_FOUND - There is no books saved'})
   @Public()
   @Get()
-  findAll(@Req() request: Request): Promise<BookDto[]> {
-    return this.booksService.findAll(request.query);
+  findAll(): Promise<BookDto[]> {
+    return this.booksService.findAll();
   }
 
   /**
