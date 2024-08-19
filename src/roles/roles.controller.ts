@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Role } from './entities/role.entity';
 import { ThrottlerGuard } from '@nestjs/throttler';
@@ -37,8 +37,8 @@ export class RolesController {
   @ApiBearerAuth()
   @HasRoles('ADMIN')
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rolesService.findOneByID(+id);
+  findOne(@Param('id', ParseIntPipe) id: number)  {
+    return this.rolesService.findOneByID(id);
   }
 
   /**

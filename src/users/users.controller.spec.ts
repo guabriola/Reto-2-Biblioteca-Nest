@@ -197,6 +197,7 @@ describe('UsersController', () => {
       await expect(controller.findAll()).rejects.toThrow(ForbiddenException);
       expect(usersService.findAll).toHaveBeenCalledWith();
     });
+
   });
 
   //Create a new user
@@ -207,7 +208,7 @@ describe('UsersController', () => {
       const result = await controller.create(createUserDto);
       expect(result).toEqual(userDto);
       expect(usersService.createUser).toHaveBeenCalledWith(createUserDto);
-    })
+    });
 
     //Username or email already exists
     it('Should throw ConflictException if user or email already exists', async () => {
@@ -216,7 +217,7 @@ describe('UsersController', () => {
       );
       await expect(controller.create(createUserDto)).rejects.toThrow(ConflictException);
       expect(usersService.createUser).toHaveBeenCalledWith(createUserDto);
-    })
+    });
   });
 
   //Update a user

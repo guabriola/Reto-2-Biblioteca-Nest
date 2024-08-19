@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { UsersService } from './users.service';
 import { UserDto } from './dto/user.dto';
@@ -66,7 +66,7 @@ export class UsersController {
     @ApiBearerAuth()
     @HasRoles('ADMIN')
     @Get(':userId')
-    findOneById(@Param('userId') userId: number): Promise<UserDto> {
+    findOneById(@Param('userId', ParseIntPipe) userId: number): Promise<UserDto> {
         return this.userService.findUserById(userId);
     }
 
@@ -77,6 +77,7 @@ export class UsersController {
         summary: 'Find user by username - ADMIN Access',
       })
     @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 400, description: 'Validation failed (numeric string is expected)' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
@@ -101,6 +102,7 @@ export class UsersController {
         `,
       })
     @ApiResponse({ status: 200, description: 'The user with id xxxx was updated' })
+    @ApiResponse({ status: 400, description: 'Validation failed (numeric string is expected)' })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -113,7 +115,7 @@ export class UsersController {
     @UseGuards(SelfOrAdminGuard)
     @Put(':userId')
     update(
-        @Param('userId') userId: number,
+        @Param('userId', ParseIntPipe) userId: number,
         @Body() newUser: UpdateUserDto): Promise<any> {
         return this.userService.updateUser(userId, newUser);
     }
@@ -129,6 +131,7 @@ export class UsersController {
       })
     @ApiResponse({ status: 200, description: 'The user with id xxxx was updated' })
     @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 400, description: 'Validation failed (numeric string is expected)' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 403, description: 'Forbidden resource' })
     @ApiResponse({ status: 404, description: 'The resource you requested could not be found.' })
@@ -137,7 +140,7 @@ export class UsersController {
     @ApiBearerAuth()
     @HasRoles('ADMIN')
     @Delete(':userId')
-    delete(@Param('userId') userId: number): Promise<UserDto> {
+    delete(@Param('userId', ParseIntPipe) userId: number): Promise<UserDto> {
         return this.userService.deleteUser(userId);
     }
 

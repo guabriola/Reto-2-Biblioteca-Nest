@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Body, Delete, Put, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { BooksService } from './books.service';
 import { Request } from 'express';
@@ -39,10 +39,11 @@ export class BooksController {
     description: `Find book by id`,
   })
   @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
+  @ApiResponse({ status: 400, description: 'Validation failed (numeric string is expected)' })
   @ApiResponse({ status: 500, description: 'Internal Server Error'})
   @Public()
   @Get(':bookId')
-  findBook(@Param('bookId') bookId: string): Promise<BookDto> {
+  findBook(@Param('bookId', ParseIntPipe) bookId: string): Promise<BookDto> {
     return this.booksService.findBookById(bookId);
   }
 
@@ -99,6 +100,7 @@ export class BooksController {
     When book is deleted, book reservations will be deleted to!`,
   })
   @ApiResponse({ status: 200, description: 'The book with id xxx was deleted'})
+  @ApiResponse({ status: 400, description: 'Validation failed (numeric string is expected)' })
   @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
   @ApiResponse({ status: 403, description: 'Unauthorized'})
   @ApiResponse({ status: 403, description: 'Forbidden resource'})
@@ -106,7 +108,7 @@ export class BooksController {
   @ApiBearerAuth()
   @HasRoles('ADMIN')
   @Delete(':bookId')
-  deleteBook(@Param('bookId') bookId: string): Promise<any> {
+  deleteBook(@Param('bookId', ParseIntPipe) bookId: string): Promise<any> {
     return this.booksService.deleteBook(bookId);
   }
 
@@ -118,6 +120,7 @@ export class BooksController {
   })
   @ApiResponse({ status: 200, description: 'The book with id xxx was updated'})
   @ApiResponse({ status: 400, description: 'Bad request, incorrect data'})
+  @ApiResponse({ status: 400, description: 'Validation failed (numeric string is expected)' })
   @ApiResponse({ status: 404, description: 'NOT_FOUND - There is not book with id xxx'})
   @ApiResponse({ status: 403, description: 'Unauthorized'})
   @ApiResponse({ status: 403, description: 'Forbidden resource'})
@@ -126,7 +129,7 @@ export class BooksController {
   @HasRoles('ADMIN')
   @Put(':bookId')
   updateBook(
-    @Param('bookId') bookId: string,
+    @Param('bookId', ParseIntPipe) bookId: string,
     @Body() newBook: UpdateBookDto): Promise<any> {
     return this.booksService.updateBook(bookId, newBook);
   }
