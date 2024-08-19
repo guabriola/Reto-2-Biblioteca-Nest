@@ -115,7 +115,7 @@ export class BooksController {
    * Update book
    * */
   @ApiOperation({
-    summary: 'Delete book - ADMIN Access',
+    summary: 'Update book - ADMIN Access',
   })
   @ApiResponse({ status: 200, description: 'The book with id xxx was updated'})
   @ApiResponse({ status: 400, description: 'Bad request, incorrect data'})
