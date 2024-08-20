@@ -144,35 +144,35 @@ describe('UsersService', () => {
   });
 
   //Find a user by username
-  // describe('Find a user by username', () => {
-  //   it('Should return the userDtos of users that match the username', async () => {
-  //     const username = 'username';
-  //     userRepository.find.mockResolvedValue();
-  //     const result = await service.findUserByUsername(username);
+  describe('Find a user by username', () => {
+    it('Should return the userDtos of users that match the username', async () => {
+      const username = 'username';
+      userRepository.find.mockResolvedValue([mockUser]);
+      const result = await service.findUserByUsername(username);
 
-  //     expect(result).toEqual([mockUser].map(user => new UserDto(user)));
-  //     expect(userRepository.find).toHaveBeenCalledWith({
-  //       where: {
-  //         username: username,
-  //       },
-  //       relations: ['roles']
-  //     });
-  //   });
+      expect(result).toEqual(new UserDto([mockUser][0]));
+      expect(userRepository.find).toHaveBeenCalledWith({
+        where: {
+          username: username,
+        },
+        relations: ['roles']
+      });
+    });
 
 
-    // it('Should throw a NotFoundException if no users are found', async () => {
-    //   const username = 'username';
-    //   userRepository.find.mockResolvedValue([]);
+    it('Should throw a NotFoundException if no users are found', async () => {
+      const username = 'username';
+      userRepository.find.mockResolvedValue([]);
 
-    //   expect(service.findAll()).rejects.toThrow(NotFoundException);
-    //   expect(userRepository.find).toHaveBeenCalledWith({
-    //     where: {
-    //       username: username,
-    //     },
-    //     relations: ['roles']
-    //   });
-    // });
+      expect(service.findUserByUsername(username)).rejects.toThrow(NotFoundError);
+      expect(userRepository.find).toHaveBeenCalledWith({
+        where: {
+          username: username,
+        },
+        relations: ['roles']
+      });
+    });
 
-  // });
+  });
 
 });
