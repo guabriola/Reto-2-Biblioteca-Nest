@@ -36,7 +36,7 @@ export class ReservationsService {
   }
 
   //Create new Reservation
-  async create(paramUserId, newReservation: CreateReservationDto): Promise<ReservationDto> {
+  async create(paramUserId: number, newReservation: CreateReservationDto): Promise<ReservationDto> {
     try {
 
       const { userId, bookId, startDate, endDate } = newReservation;
@@ -98,7 +98,7 @@ export class ReservationsService {
   }
 
   //Find All Reservations
-  async findAll(params): Promise<any[]> {
+  async findAll(): Promise<any[]> {
     try {
       const reservations = await this.reservationRepository.find({
         relations: ['user', 'book'],
@@ -113,11 +113,11 @@ export class ReservationsService {
   }
 
   //Find a reservation By Id
-  async findReservationById(reservationId: string): Promise<ReservationDto> {
+  async findReservationById(reservationId: number): Promise<ReservationDto> {
     try {
       const findedReservation = await this.reservationRepository.findOne({
         where: {
-          id: parseInt(reservationId)
+          id: reservationId
         },
         relations: {
           user: true,
@@ -138,7 +138,7 @@ export class ReservationsService {
 
   //Find a reservation By userId
 
-  async findReservationByUserId(userId: string): Promise<ReservationDto[]> {
+  async findReservationByUserId(userId: number): Promise<ReservationDto[]> {
     try {
       const reservations = await this.reservationRepository
         .createQueryBuilder('reservation')
@@ -169,7 +169,7 @@ export class ReservationsService {
   }
 
   //Find a reservation By bookId with complete data
-  async findReservationByBookId(bookId: string): Promise<ReservationDto[]> {
+  async findReservationByBookId(bookId: number): Promise<ReservationDto[]> {
     try {
       const reservations = await this.reservationRepository
         .createQueryBuilder('reservation')
@@ -200,7 +200,7 @@ export class ReservationsService {
   }
 
   // Find a reservation By bookId for public access.
-  async findReservationByBookIdPublic(bookId: string): Promise<PublicReservationDto[]> {
+  async findReservationByBookIdPublic(bookId: number): Promise<PublicReservationDto[]> {
     try {
       const reservations = await this.reservationRepository
         .createQueryBuilder('reservation')
@@ -228,13 +228,13 @@ export class ReservationsService {
   }
 
   //Update Reservation -->userId (for authorization) + reservationId + StartDate + EndDate <--
-  async update(userId: string, reservationId: string, updateReservation: UpdateReservationDto): Promise<any> {
+  async update(userId: number, reservationId: number, updateReservation: UpdateReservationDto): Promise<any> {
     try {
       //Checks if reservation exists
       const reservationToUpdate = await this.findReservationById(reservationId);
 
       //Checks if the userId in Params() is the same of the reservation.
-      if (userId == reservationToUpdate.userId.toString()) {
+      if (userId == reservationToUpdate.userId) {
         const response = await this.reservationRepository.update(reservationId, updateReservation);
 
         if (response.affected != 1) {
@@ -256,14 +256,14 @@ export class ReservationsService {
   }
 
   //Delete Reservation By ID -->userId (for authorization) + reservationId
-  async deleteReservation(userId: string, reservationId: string): Promise<any> {
+  async deleteReservation(userId: number, reservationId: number): Promise<any> {
     try {
       //Checks if reservation exists
       const reservationToUpdate = await this.findReservationById(reservationId);
 
       //Checks if the userId in Params() is the same of the reservation.
-      if (userId == reservationToUpdate.userId.toString()) {
-        const response = await this.reservationRepository.delete({ id: parseInt(reservationId) });
+      if (userId == reservationToUpdate.userId) {
+        const response = await this.reservationRepository.delete({ id: reservationId });
 
         if (response.affected != 1) {
           //This exception is not the same of the SelfOrAdminGuard.

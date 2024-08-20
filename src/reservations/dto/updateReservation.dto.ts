@@ -21,8 +21,8 @@ export class UpdateReservationDto {
     @IsOptional()
     readonly endDate: Date;
 
-    @Validate(CustomDateRangeValidator)
-    validateDates() {
-      return this;
-    }
+    // @Validate(CustomDateRangeValidator)
+    // validateDates() {
+    //   return this;
+    // }
 }

@@ -256,7 +256,7 @@ describe('UsersController', () => {
 
     //ForbiddenException
     it('Should throw ForbiddenException if is not the user or admin user', async () => {
-      const userId = 7;
+      const userId = 7;delete
 
       jest.spyOn(usersService, 'updateUser').mockRejectedValue(new ForbiddenException());
       await expect(controller.update(7, updateUserDto)).rejects.toThrow(ForbiddenException);
