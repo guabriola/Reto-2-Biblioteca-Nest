@@ -1,13 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { RolesService } from 'src/roles/roles.service';
 import { ReservationsService } from 'src/reservations/reservations.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserDto } from './dto/user.dto';
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import NotFoundError from 'src/common/errors/not-found.exception';
+import { CreateUserDto } from './dto/createUser.dto';
+import * as bcrypt from "bcrypt";
 
 describe('UsersService', () => {
 
@@ -36,6 +38,15 @@ describe('UsersService', () => {
   }
 
   const mockRole = { id: 1, role: 'USER' };
+
+  const mockCreateUserDto: CreateUserDto = {
+    username: 'user',
+    email: 'user@example.com',
+    password: 'password',
+    name: 'new',
+    lastName: 'user',
+    roles: [],
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -75,6 +86,7 @@ describe('UsersService', () => {
 
   //Find all
   describe('Find all users', () => {
+
     it('should return an array of users', async () => {
       userRepository.find.mockResolvedValue([mockUser]);
       const result = await service.findAll();
@@ -93,6 +105,7 @@ describe('UsersService', () => {
 
   //Find a user - for Authentication 
   describe('Find a user for authentication', () => {
+
     it('Should return the user of the provided id', async () => {
       const userId = 1;
       userRepository.findOne.mockResolvedValue(mockUser);
@@ -114,6 +127,7 @@ describe('UsersService', () => {
 
   //Find a user by Id for the controller 
   describe('Find a user for controller by id', () => {
+
     it('Should return the userDto of the provided id', async () => {
       const userId = 1;
       userRepository.findOne.mockResolvedValue(mockUser);
@@ -145,6 +159,7 @@ describe('UsersService', () => {
 
   //Find a user by username
   describe('Find a user by username', () => {
+
     it('Should return the userDtos of users that match the username', async () => {
       const username = 'username';
       userRepository.find.mockResolvedValue([mockUser]);
@@ -174,5 +189,46 @@ describe('UsersService', () => {
     });
 
   });
+
+  //Create a user
+  describe('Create a new user', () => {
+
+    it('Should create a user and return the userDto', async () => {
+      const savedUser: User = {
+        id: 1,
+        ...mockCreateUserDto,
+        password: await bcrypt.hash(mockCreateUserDto.password, 10),
+        roles: [],
+        bookReservations: [],
+      };
+
+      rolesService.findOneByRoleName.mockResolvedValue({ id: 1, role: 'USER', users: [] });
+      userRepository.save.mockResolvedValue(savedUser);
+
+      const result = await service.createUser(mockCreateUserDto);
+      expect(result).toEqual(new UserDto(savedUser));
+      expect(rolesService.findOneByRoleName).toHaveBeenCalledWith('USER');
+      expect(userRepository.save).toHaveBeenCalledWith(expect.objectContaining({
+        username: mockCreateUserDto.username,
+        email: mockCreateUserDto.email,
+        roles: [{ id: 1, role: 'USER', users: [] }],
+      }));
+    })
+
+    it('Should return ConflictException if user or email already exists', async () => {
+
+      class CustomQueryFailedError extends QueryFailedError {
+        errno: number;
+      
+        constructor(errno: number, code: string) {
+          super('', [], { code } as any);
+          this.errno = errno;
+        }
+      }
+      
+      userRepository.save.mockRejectedValue(new CustomQueryFailedError(1062, 'ER_DUP_ENTRY'));
+      await expect(service.createUser(mockCreateUserDto)).rejects.toThrow(HttpException);
+    })
+  })
 
 });

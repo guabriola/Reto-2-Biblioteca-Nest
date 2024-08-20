@@ -97,7 +97,7 @@ export class UsersService {
     async createUser(newUser: CreateUserDto): Promise<UserDto> {
         try {
 
-            //Encriptation and serch of the default roll (USER)
+            //Encriptation and serch of the default role (USER)
             const salt = await bcrypt.genSalt();
             const userRole = await this.roleService.findOneByRoleName('USER');
             //Password encriptation
@@ -158,11 +158,6 @@ export class UsersService {
             }
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        // This is an other way to the update line - But it necessary to change the promisse to --> Promise<User>
-        // let toUpdate = await this.usersRepository.findOne({ where: { id: userId } });
-        // let userUpDated = Object.assign(toUpdate, newUser);
-        // return this.usersRepository.save(userUpDated);
     }
 
     //Add Role
