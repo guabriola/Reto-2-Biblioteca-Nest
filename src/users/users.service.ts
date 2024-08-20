@@ -8,7 +8,6 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import * as bcrypt from "bcrypt";
 import { RolesService } from 'src/roles/roles.service';
 import NotFoundError from 'src/common/errors/not-found.exception';
-import { ReservationsService } from 'src/reservations/reservations.service';
 
 require('dotenv').config();
 
@@ -17,7 +16,6 @@ export class UsersService {
 
     constructor(
         private roleService: RolesService,
-        private reservationsService: ReservationsService,
         @InjectRepository(User) private usersRepository: Repository<User>,
     ) { }
 
