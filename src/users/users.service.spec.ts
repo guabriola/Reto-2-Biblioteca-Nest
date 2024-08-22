@@ -6,10 +6,12 @@ import { RolesService } from 'src/roles/roles.service';
 import { ReservationsService } from 'src/reservations/reservations.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserDto } from './dto/user.dto';
-import { ConflictException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, HttpException, NotFoundException } from '@nestjs/common';
 import NotFoundError from 'src/common/errors/not-found.exception';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from "bcrypt";
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { use } from 'passport';
 
 describe('UsersService', () => {
 
@@ -48,6 +50,9 @@ describe('UsersService', () => {
     roles: [],
   }
 
+  const mockUpdateUserDto = new UpdateUserDto();
+  mockUpdateUserDto.name = 'NewName';
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -57,6 +62,7 @@ describe('UsersService', () => {
           useValue: {
             find: jest.fn(),
             findOne: jest.fn(),
+            findOneBy: jest.fn(),
             save: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
@@ -219,16 +225,54 @@ describe('UsersService', () => {
 
       class CustomQueryFailedError extends QueryFailedError {
         errno: number;
-      
+
         constructor(errno: number, code: string) {
           super('', [], { code } as any);
           this.errno = errno;
         }
       }
-      
+
       userRepository.save.mockRejectedValue(new CustomQueryFailedError(1062, 'ER_DUP_ENTRY'));
       await expect(service.createUser(mockCreateUserDto)).rejects.toThrow(HttpException);
     })
-  })
+  });
 
+  //Update a user
+  describe('Create a new user', () => {
+
+    it('should update the user successfully', async () => {
+      const userID = 1;
+      userRepository.findOneBy.mockResolvedValue(mockUser);
+      userRepository.update.mockResolvedValue({ affected: 1 } as any);
+
+      const result = await service.updateUser(userID, mockUpdateUserDto);
+
+      expect(userRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+      expect(userRepository.update).toHaveBeenCalledWith(1, mockUpdateUserDto);
+      expect(result).toEqual(`The user with id ${userID} was updated`);
+    });
+
+    //User not Found
+    it('Should throw NotFoundError when user does not exists', async () => {
+      const userId = 1;
+      userRepository.findOneBy.mockResolvedValue(null);
+      const result = await service.updateUser(userId, {} as UpdateUserDto);
+      expect(result).toBeInstanceOf(NotFoundError);
+      expect(userRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+    })
+
+    //Username can not be changed
+    it('should throw ForbiddenException is changing username', async () => {
+      const userId = 1;
+
+      userRepository.findOneBy.mockResolvedValue(mockUser);
+      mockUpdateUserDto.username = "newUsername";
+
+
+      const result = await service.updateUser(userId, mockUpdateUserDto);
+      expect(result).toBeInstanceOf(HttpException);
+      expect(userRepository.findOneBy).toHaveBeenCalledWith({ id: 1 });
+    });
+
+  });
 });
