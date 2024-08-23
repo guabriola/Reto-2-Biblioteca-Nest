@@ -153,7 +153,7 @@ export class UsersService {
         } catch (e) {
             if (e instanceof QueryFailedError) {
                 if (e.driverError.errno = 1062 || e.driverError.code.includes('ER_DUP_ENTRY')) {
-                    throw new HttpException('Username or email already exists', HttpStatus.CONFLICT);
+                    throw new HttpException('Email already exists', HttpStatus.CONFLICT);
                 }
             }
             throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
