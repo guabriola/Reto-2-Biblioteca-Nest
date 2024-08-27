@@ -1,0 +1,563 @@
+[33mcommit 235d057e97b1dddfac39ce1f5b512c8ad279e3e0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31mReto2-DigitalNAO/main[m[33m)[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 23 14:04:17 2024 -0300
+
+    Message od error changed
+
+[33mcommit 0248affcf726d44dd74328fb829b17b67b9bc11a[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 22 16:19:50 2024 -0300
+
+    userservice test updated
+
+[33mcommit 84e2dde18b410e5b2e1791935f78c56c2680bcd7[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Aug 20 20:21:00 2024 -0300
+
+    Unitests complited usertServices until create user
+
+[33mcommit dfb8939b5977ab49606bf3ebc492c76851c072b0[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Aug 20 15:39:38 2024 -0300
+
+    Unitest for findUserByUsername service - done
+
+[33mcommit 9a293ecd7e3750121ac1e67038322f44d98529d2[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Aug 20 15:33:04 2024 -0300
+
+    Start Unitest for userService -  Findall and findBy id for auth and controller - done
+
+[33mcommit 4525eb655f230f3f1c7585a344c3fef5b6828ce0[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Aug 19 23:03:44 2024 -0300
+
+    Solving a typing error
+
+[33mcommit 14a616e08ca10b22b29c84f610cac78e20d5b84a[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Aug 19 23:02:37 2024 -0300
+
+    Unitest for reservation controller is complete
+
+[33mcommit 0dadb032e367d180ca4b9526acb7a1323cdb3b14[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Aug 19 20:08:41 2024 -0300
+
+    UniTest for books controller is done
+
+[33mcommit 153c8f6767c1342d3fa299cd91e69e5aff371b47[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Aug 19 15:00:54 2024 -0300
+
+    Starting with bookscontroller unitests- Findby id and title complete - create new book in progress
+
+[33mcommit 3307e15598a2a1d8c88ddccf0e3b6bc253cc37cb[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Aug 19 10:37:16 2024 -0300
+
+    Update Usr Book and Role controllers - I includ ParseIntPipe to manage Id's numbers Autoconvertign and Validating. Role Unitests complete
+
+[33mcommit 49f901061b911f5c7ad0ab445b735ef0163bcaa3[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sun Aug 18 18:35:44 2024 -0300
+
+    All uniTest for userController are done.
+
+[33mcommit 152bd33fb0107d8d26cdabb64bb58663a90ee1c6[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sun Aug 18 16:14:43 2024 -0300
+
+    Find userById controller test fixed and add finall user controller test. Both working ok
+
+[33mcommit 6b841ccb2bba1fafb6cdc6d787f89ea97f9ddb13[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 16 15:19:54 2024 -0300
+
+    Testin error - its necessary to fix
+
+[33mcommit f52c5a5c4ec434682225df376168f8308b791790[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 15 16:27:21 2024 -0300
+
+    Controller test getUserById done
+
+[33mcommit 7051022e4de5e7560e63717004c2343599251712[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 15 16:04:07 2024 -0300
+
+    Test of userController of findAll user created -  FindAll in controller and service updated (Params deleted)
+
+[33mcommit 9092c527373ae007c0d345d644aef2323a6b1191[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 15 15:34:46 2024 -0300
+
+    Test Throttler Guard Error solved in user.controller test.
+
+[33mcommit 8e13df1dbfb8417ce5d13cd58d6273a7b418641d[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 15 15:02:19 2024 -0300
+
+    Update test configurations on package.json and tsconfig.json in order to solve errors.
+
+[33mcommit cb8539d9348decee764b0df4f25e23c4e84746a9[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Aug 14 09:10:25 2024 -0300
+
+    Actualizing testing to 10.4.0
+
+[33mcommit fb2e065121c7fd54cd7075e882e681dd76ee0c19[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 8 22:13:58 2024 -0300
+
+    All controllers and Services checked for error management and swagger documentation. API
+    completely functional - Next step, testing.
+
+[33mcommit a9fa99af49cf3d08490b6f21c4a5b448e4dfc101[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 8 14:22:01 2024 -0300
+
+    Deleting some console.logs
+
+[33mcommit 2159c8a62caf2839227a993170a9d94139887533[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 8 13:10:04 2024 -0300
+
+    Reservations update - Add security step to create-update-delete. Only Owner user and admin have access- The update is in the service - cheks if the userId in the url  is the same to be processed int the service.
+
+[33mcommit b9bba19590bab1008f454efbf1e254894d81b17d[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Aug 7 23:42:58 2024 -0300
+
+    Swagger updates for reservations
+
+[33mcommit 69fd9327e96bc1449a5a732d72f2902e75e24500[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Aug 7 23:15:54 2024 -0300
+
+    Delete unnesesary import
+
+[33mcommit e2671f9ee8591479e71ac7d1d7fc8b355d1b712a[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Aug 7 22:52:42 2024 -0300
+
+    Reservation controller and service updated - Error management and authorization completed - Some endpoint are public other only admin an oder the user owner of the reservation and admin
+
+[33mcommit 44ce9200dc5e20700e49387504d49a5db5e8dc1c[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Aug 6 23:55:52 2024 -0300
+
+    New reservations error management updated - now verify if the book us available in the selected dates - Swagger for reservations endpoint updated.
+
+[33mcommit 21447d74c9e60bb3fc1c0ebfedb0faa7cca0fea4[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Aug 6 18:25:30 2024 -0300
+
+    Book controller service and error management and Swagger checked!
+
+[33mcommit ecc1e935a6af9adf6d6e35d004815407396a2d6c[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Aug 6 18:06:13 2024 -0300
+
+    Update user complete - user can update data olny by themself or ADMIN. Configuraton complete - userController Swagger documentation done.
+
+[33mcommit eba86269c32d27a8b7e4beb569249f3599f882bd[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Aug 6 11:57:36 2024 -0300
+
+    Working on userupdate authorization- onlu by the user himself or ADMIN user - working progress. Check roles.guard.ts SelfOrAdminGuard
+
+[33mcommit d9611957c717421cf67900c980e71beff45592a3[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Aug 5 21:53:16 2024 -0300
+
+    Cheking userService Errors - DeleteUser service refactor - now return error when are reservation with that user.
+
+[33mcommit 92909376066c13de137276ef7b0ab7009c47547b[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Aug 5 14:52:14 2024 -0300
+
+    Improoving userService error mannagment - Working on UpdateUser
+
+[33mcommit e5b81f3d2b766e2535bc2df881aa932a7b7d9f5f[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sun Aug 4 18:24:37 2024 -0300
+
+    Add not-found.exception.ts for all not found error - Its wotking with all-exception.filter.ts.
+    Already used in userService.
+
+[33mcommit 5577089c2dee360230d583933be80c11739649ad[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sun Aug 4 17:11:58 2024 -0300
+
+    Message and logging changes - Log of not http errors bring all information
+
+[33mcommit aae8514dfc9b4322733e815088afe27f21d1582d[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sat Aug 3 20:57:47 2024 -0300
+
+    Update of all-exception.filter in order log all the errors with logger.service - Now it logs all the errors with complete information
+
+[33mcommit 0969538c9d50d424c18bdc5c5322f23a7adb1f56[m
+Author: Guillermo Abriola <102756714+guabriola@users.noreply.github.com>
+Date:   Sat Aug 3 19:34:20 2024 -0300
+
+    Delete log directory - Already added to gitignore
+
+[33mcommit 8203ccb71bc66bb3af738f6c555c39701b87d789[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sat Aug 3 19:37:16 2024 -0300
+
+    Add log foldet to gitIgnore and add all-exception-filter in order to manage all errors not only httpExceptions
+
+[33mcommit 751b7b1df62c8d8087b12256337eddbb7d696e94[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 2 20:42:41 2024 -0300
+
+    Now an user can not change his username.
+
+[33mcommit ddf24182afce22f07c5f9756b84d88299a86f104[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 2 20:13:55 2024 -0300
+
+    Delete unecesary console.logs
+
+[33mcommit fdafd6c74b53be3bf9d8f5a36684d13c10792b72[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 2 10:42:31 2024 -0300
+
+    All controllers add to the logger middleware
+
+[33mcommit a6b01be349d5b953d18769199a3f2d30562fbd2a[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 2 10:11:32 2024 -0300
+
+    Winston Logger implemented with daily-rotate-file - Every console log it will be formated and storage in a logg file.
+
+[33mcommit 4c83b92ce4be155958a8990cf18fcc90ec4648c3[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 2 09:47:25 2024 -0300
+
+    Logger messeges update add user and roluser logger.middleware.ts
+
+[33mcommit 758dd5a62109a5abc19461fd6dd1f485ea5558a0[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Aug 2 08:53:59 2024 -0300
+
+    Unnesesary console logs deleted
+
+[33mcommit 7fdb50babaaf5998b1b7682c94a650c86a1662f7[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 1 23:31:27 2024 -0300
+
+    Role Based Acces control implemented in all controllers.
+
+[33mcommit 09324c67d236ecd722be1a0997f0b020403e68ce[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Aug 1 15:31:11 2024 -0300
+
+    RemoveRol of user service an controller created.  RemoveRol controller Swagger updated
+
+[33mcommit 797ffc81539afbd4bec17a04567587c41b2b3581[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Jul 31 11:58:57 2024 -0300
+
+    AddRol of user service an controller and init.service firs user ADMIN fixed.  AddRole controller Swagger updated
+
+[33mcommit abac439fd13c2f3b23ef235544a88eb55669768d[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 30 10:47:00 2024 -0300
+
+    Im working on userservice refactorin and init.services refactoring for the new configuration with roles - now is not working
+
+[33mcommit cc4e5684acc5005fc449b32344f9fd9221cd06a4[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Jul 29 23:36:37 2024 -0300
+
+    Role bases athorizarion Refactoring process. CRUD for Role Created - Init.service create admin user with ADMIN ROL and create a USER rol to - Todo ROLE BASED  Athorization And Refactoring CRUD User
+
+[33mcommit 47cae490e00d06d231629488bac0b7f82c74de2c[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Jul 29 15:08:00 2024 -0300
+
+    Role add to users and loging returns user userid and ROLe
+
+[33mcommit 0885f6671bd98d3dfb026c34a47fd822ada63148[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Jul 29 09:29:55 2024 -0300
+
+    Swagger of reservations updated
+
+[33mcommit 87ec83524a7159011280b37b9f7f4e06ec0d74c0[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Jul 25 14:15:51 2024 -0300
+
+    Reservations updated with date-fns - Dates have to be rigth to post or update a reservation -
+
+[33mcommit 4d45642e820c37cf9b1929ed15b6a4d2626c66e4[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Jul 25 12:34:10 2024 -0300
+
+     book title is not require to be unique
+
+[33mcommit 90c0f9f40ce0d1d778e5f917d7951fc8a19a9da6[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Jul 24 22:08:50 2024 -0300
+
+    Readme File with instructions to start the project.
+
+[33mcommit d10d59cbbc0abc6677d056e6ad5247dcec0ce9fa[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Jul 24 21:29:13 2024 -0300
+
+    Configure Swagger for books Dtos and enpoints
+
+[33mcommit 29e5de16231e70c6e5efb62ac30bee21d0cb6587[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Jul 24 14:51:40 2024 -0300
+
+    User refactoring of class-validations on update and create userDtos - Refactor all entities because dont need validations in entities - More swagger configuration on user DTOs and User endpoints
+
+[33mcommit 34a277781e78b619967eef3c9a686b492744ed77[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 23 22:00:24 2024 -0300
+
+    Swagger configured-Ordered endpioints, descriptions, ordered schemas Login dto and User completed
+
+[33mcommit 8c503cf2d8b7b6ca32df8c2d31f1203a659fdc78[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Jul 19 14:39:06 2024 -0300
+
+    init.services.ts created en order to create the first user ADMIN to start to use the app.
+
+[33mcommit 490f9025d4925343c2d4afacc6be6196e246e2da[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Jul 17 14:31:51 2024 -0300
+
+    The problem of update user with password it fixed - Now it possible  independently change any of a user's data, if the password is changed remains encrypted
+
+[33mcommit 3d51962daaade3fbc52b7279f2d69ea8d3e5c430[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Jul 15 13:49:11 2024 -0300
+
+    Queda configurado JWT con la key en variable de entorno.
+
+[33mcommit 66d36a7428eeeb85e19a636006e3cc31c7167b39[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Jul 15 09:55:53 2024 -0300
+
+    Signup and Login are public routes now
+
+[33mcommit f64d8cd442d641beadfca22bd0d1c06f886cfd54[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Jul 10 14:57:29 2024 -0300
+
+    Passport JWT Global protected routes  implemented - https://docs.nestjs.com/recipes/passport#enable-authentication-globally
+
+[33mcommit 1e19fc68b4569bbc46425586b83a737ca22a8d03[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 9 21:27:26 2024 -0300
+
+    JWT functionality done - Next step Implementing PAssport JWT in https://docs.nestjs.com/recipes/passport
+
+[33mcommit fa4e980768c855347f69806647a6ced60f83d246[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 9 20:07:25 2024 -0300
+
+    Basic Passport auth implemented I can create a user with hashed pass and validate user and password returnin user y pass and unothorizes if not - Next step passportJWT
+
+[33mcommit 2b561517f5a94dc0b8c7c698e730f82ab1eef9a8[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon Jul 8 15:38:23 2024 -0300
+
+    The create auth signUp its created
+
+[33mcommit bad9a51be89af6ba61ae951301d20efb14f20322[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 2 15:03:40 2024 -0300
+
+    CORS basic configuration
+
+[33mcommit 7845c93cab68674dcfde09c22909c049901723dc[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 2 14:54:59 2024 -0300
+
+    Applying basic helmet configuration
+
+[33mcommit 6c8f2825c1de8fd3f8973a43c6a4496e440c1949[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 2 14:32:47 2024 -0300
+
+    Basic Rate limiting configurated on controllers
+
+[33mcommit 9047460a0d9961de6c1ff43f927ac6bbe8d2fc25[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jul 2 13:52:40 2024 -0300
+
+    Save before start with security configuration
+
+[33mcommit ff8d9656f54188a45365e41a1637cded84a75666[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Jun 28 10:51:04 2024 -0300
+
+    Basic Logger middleware created for all controllers
+
+[33mcommit b81ce67b1e38f819ad4e40e51ed972cde496b796[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jun 25 20:24:21 2024 -0300
+
+    Find user by username, find book's by title and all error management in services of user, book and reservation are done.
+
+[33mcommit b18c0899a8faaef0905cfff7dbc492267bbab9f1[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jun 25 15:20:19 2024 -0300
+
+    The error management in yser service it's done - Todo find user by username an email.
+
+[33mcommit 6b09165dba0f47fd1abc049c2a8d6e720c62e834[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sun Jun 23 19:15:29 2024 -0300
+
+    Error reservation managant done - Have todo for some erros
+
+[33mcommit 2c9e62ddee47fe3e477b5ca842e11ae30f43ce7c[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sat Jun 22 19:35:10 2024 -0300
+
+    Book CRUD expetions created
+
+[33mcommit 47646d0551381066d96a432db5e0a07d2628e6cc[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sat Jun 22 15:17:36 2024 -0300
+
+    Working on deletebook Resonses undone code and errors in books.services
+
+[33mcommit 89b5f46bf4adb67fb030d2ad3c9a8626ece1b4bc[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Sat Jun 22 12:11:28 2024 -0300
+
+    Find reservation by user and book id it is functional
+
+[33mcommit 92ce17b3a9f887b452baba60971d53fd5c2c826e[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Jun 21 15:52:27 2024 -0300
+
+    Service for find reservation by user id is created - ToDo controller for this service
+
+[33mcommit aeaa94797666d462cd0eb28c1a8308d07d6c59d8[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Jun 21 14:57:56 2024 -0300
+
+    CreateReservationDto created and Crud modified
+
+[33mcommit 4fb99ebd59963a9dbe275c7880a12e3ef86b1271[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri Jun 21 13:49:31 2024 -0300
+
+    Crud REservations is working managing error - Nest step add createReservationDto.ts in order to solve problems
+
+[33mcommit 5dd8377d2fcf319a51ea8d8890ffacaae8327d9d[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Jun 20 16:19:06 2024 -0300
+
+    igual que anterior commit
+
+[33mcommit d4d84d7570a6056c3f851b8c65d3728d3553ec31[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu Jun 20 16:11:11 2024 -0300
+
+    Now Find Reservation only returns bookud user id and dates.
+
+[33mcommit 8cf4d039f239f3a3e91edd0dc2cba255cdb5f49b[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed Jun 19 19:54:58 2024 -0300
+
+    Reservation CRUD basic is complete DB have a new table reservation with user and book fk's
+
+[33mcommit 6d76271869c11de2c8cae3773a13d33d82cf7406[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jun 18 15:51:28 2024 -0300
+
+    New Module from Users - Put is not working-Maybe reset DB will work
+
+[33mcommit 2a8c290b03e2d3bc5dc54a5a0136dceb9b15b7d4[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jun 18 14:18:18 2024 -0300
+
+    Reverse Git - User and Auth Deleted
+
+[33mcommit 31a0230cea0deb95fa737ce9853daa285f19ef8e[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jun 18 11:56:58 2024 -0300
+
+    Reapply "Reservation EndPoints Working"
+    
+    This reverts commit 8b4e71053cf69824015f45e6a64484f5473e0d1f.
+
+[33mcommit 8b4e71053cf69824015f45e6a64484f5473e0d1f[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Tue Jun 18 11:46:53 2024 -0300
+
+    Revert "Reservation EndPoints Working"
+    
+    This reverts commit 9cda376e8db63bcc2d798e4fdd25e2c39b229e3c.
+
+[33mcommit b622e2bf9ff4d0650a7b1ad5e47dc2f118efd5ad[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed May 29 20:31:47 2024 -0300
+
+    Role-based authorization configurated- based on the link https://shpota.com/2022/07/16/role-based-authorization-with-jwt-using-nestjs.html
+
+[33mcommit 72bea9aca1449ef8c596c7f16c7dbf786e31d1d9[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed May 29 20:12:55 2024 -0300
+
+     JWT strategy implementation
+
+[33mcommit 620a910f61397cb6468bc60e99e2cdab32804196[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed May 29 19:14:49 2024 -0300
+
+    Mok of login - Next step Issuing a JWT Token
+
+[33mcommit 9cda376e8db63bcc2d798e4fdd25e2c39b229e3c[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon May 27 13:55:30 2024 -0300
+
+    Reservation EndPoints Working
+
+[33mcommit 37d52e1ca9c915b88dace474c57e8d2f721c6858[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Mon May 27 11:20:27 2024 -0300
+
+    Working on resevations
+
+[33mcommit 1a31b53b5efa2b353e341ace75ee394677e1a6ff[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri May 24 12:41:43 2024 -0300
+
+    Controller and Service for reservations created
+
+[33mcommit 7ed98e78c30623806935bf213fbcf09b55c07124[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Fri May 24 11:58:15 2024 -0300
+
+    CRUD of Books complete
+
+[33mcommit a90ab574465c5dc2b986d11eee288e4efd262297[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Thu May 23 19:52:01 2024 -0300
+
+    Se deja configurado hasta la conexión de la BDD
+
+[33mcommit 8e64e818062a0420165f19a7487a00b614984ff3[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed May 22 19:45:03 2024 -0300
+
+    A basic crud end points were created for books
+
+[33mcommit 48249a18fd1713b73fdb246c37c0b46b4a8bdfdc[m
+Author: Guillermo Abriola <guabriola@gmail.com>
+Date:   Wed May 22 13:25:32 2024 -0300
+
+    Se inicia proyecto

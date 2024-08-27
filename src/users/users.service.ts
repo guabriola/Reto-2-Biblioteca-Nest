@@ -164,7 +164,13 @@ export class UsersService {
     async addRole(username: string, roleName: string): Promise<UserDto> {
 
         try {
-            const user = await this.findUserByUsername(username);
+            // const user = await this.findUserByUsername(username);
+            const user = await this.usersRepository.findOne({
+                where: {
+                    username: username
+                },
+                relations: ['roles']
+            });
             const roleToAdd = await this.roleService.findOneByRoleName(roleName);
 
             //User exists?
@@ -194,14 +200,22 @@ export class UsersService {
     //Remove Role
     async removeRole(username: string, roleName: string): Promise<UserDto> {
         try {
-            const user = await this.findUserByUsername(username);
+            // const user = await this.findUserByUsername(username);
+            const user = await this.usersRepository.findOne({
+                where: {
+                    username: username
+                },
+                relations: ['roles']
+            });
+
             const roleToDelete = await this.roleService.findOneByRoleName(roleName);
+            
+            //User exists?
+            if (!user) {
+                throw new NotFoundError('User', username);
+            }
 
             if (user.roles.length > 1) {
-                //User exists?
-                if (!user) {
-                    throw new NotFoundError('User', username);
-                }
 
                 //Role exists?
                 if (!roleToDelete) {
@@ -233,7 +247,13 @@ export class UsersService {
     async deleteUser(userId: number): Promise<any> {
 
         try {
-            const userToDelete = await this.findUserById(userId);
+            // const userToDelete = await this.findUserById(userId);
+            const userToDelete = await this.usersRepository.findOne({
+                where: {
+                    id: userId
+                },
+                relations: ['roles']
+            });
 
             if (userToDelete) {
 

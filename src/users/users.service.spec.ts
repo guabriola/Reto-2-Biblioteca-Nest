@@ -6,7 +6,7 @@ import { RolesService } from 'src/roles/roles.service';
 import { ReservationsService } from 'src/reservations/reservations.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserDto } from './dto/user.dto';
-import { ConflictException, ForbiddenException, HttpException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, HttpException, NotFoundException } from '@nestjs/common';
 import NotFoundError from 'src/common/errors/not-found.exception';
 import { CreateUserDto } from './dto/createUser.dto';
 import * as bcrypt from "bcrypt";
@@ -39,7 +39,9 @@ describe('UsersService', () => {
     roles: [],
   }
 
-  const mockRole = { id: 1, role: 'USER' };
+  // const mockRole = { id: 1, role: 'USER' };
+  const mockRole = { id: 1, role: 'ADMIN', users: [] };
+  const mockRole2 = { id: 2, role: 'USER', users: [] };
 
   const mockCreateUserDto: CreateUserDto = {
     username: 'user',
@@ -275,4 +277,115 @@ describe('UsersService', () => {
     });
 
   });
+
+
+  // Tests for deleteUser
+  describe('deleteUser', () => {
+    it('should delete a user successfully', async () => {
+      userRepository.findOne.mockResolvedValue(mockUser);
+      userRepository.delete.mockResolvedValue({ affected: 1 } as any);
+
+      const result = await service.deleteUser(1);
+      expect(result).toEqual(`The user with id 1 was deleted`);
+      expect(userRepository.delete).toHaveBeenCalledWith(1);
+    });
+
+    it('should throw NotFoundError if user is not found', async () => {
+      userRepository.findOneBy.mockResolvedValue(null);
+      await expect(service.deleteUser(999)).rejects.toThrow(NotFoundError);
+    });
+
+    it('should throw BadRequestException if delete operation fails', async () => {
+      userRepository.findOneBy.mockResolvedValue(mockUser);
+      userRepository.delete.mockResolvedValue({ affected: 0 } as any);
+
+      await expect(service.deleteUser(1)).rejects.toThrow(
+        new BadRequestException('Not Found Error'),
+      );
+    });
+  });
+
+  // Tests for addRole
+  describe('addRole', () => {
+    it('should add a role to a user successfully', async () => {
+      userRepository.findOne.mockResolvedValue(mockUser);
+      rolesService.findOneByRoleName.mockResolvedValue(mockRole);
+      userRepository.save.mockResolvedValue(mockUser);
+
+      const result = await service.addRole('user', 'ADMIN');
+      expect(result).toEqual(new UserDto(mockUser));
+      expect(rolesService.findOneByRoleName).toHaveBeenCalledWith('ADMIN');
+      expect(userRepository.save).toHaveBeenCalledWith(mockUser);
+    });
+
+    it('should throw NotFoundError if user is not found', async () => {
+      userRepository.find.mockResolvedValue([]);
+      await expect(service.addRole('nonexistentUser', 'ADMIN')).rejects.toThrow(NotFoundError);
+    });
+
+    it('should throw NotFoundError if role is not found', async () => {
+      userRepository.find.mockResolvedValue([mockUser]);
+      rolesService.findOneByRoleName.mockResolvedValue(null);
+      await expect(service.addRole('user', 'NONEXISTENT_ROLE')).rejects.toThrow(NotFoundError);
+    });
+
+    it('should throw ConflictException if the user already has the role', async () => {
+      const userWithRole = { ...mockUser, roles: [mockRole] };
+      userRepository.findOne.mockResolvedValue(userWithRole);
+      rolesService.findOneByRoleName.mockResolvedValue(mockRole);
+
+      await expect(service.addRole('user', 'ADMIN')).rejects.toThrow(
+        new ConflictException(`User user already has the role ADMIN`),
+      );
+    });
+  });
+
+    // Tests for removeRole
+    describe('removeRole', () => {
+      it('should remove a role from a user successfully', async () => {
+
+        const userWithRoles = { ...mockUser, roles: [mockRole, mockRole2]};
+        userRepository.findOne.mockResolvedValue(userWithRoles);
+        rolesService.findOneByRoleName.mockResolvedValue(mockRole);
+
+        const expectedUserAfterRemoval = { ...userWithRoles, roles: [mockRole2] };
+        userRepository.save.mockResolvedValue(expectedUserAfterRemoval);
+  
+        const result = await service.removeRole('user', 'ADMIN');
+        expect(result).toEqual(new UserDto(expectedUserAfterRemoval));
+        expect(userRepository.save).toHaveBeenCalledWith(expectedUserAfterRemoval);
+      });
+  
+      it('should throw NotFoundError if user is not found', async () => {
+        userRepository.findOne.mockResolvedValue(null);
+        await expect(service.removeRole('nonexistentUser', 'ADMIN')).rejects.toThrow(NotFoundError);
+      });
+  
+      it('should throw NotFoundError if role is not found', async () => {
+        userRepository.find.mockResolvedValue([mockUser]);
+        rolesService.findOneByRoleName.mockResolvedValue(null);
+        await expect(service.removeRole('user', 'NONEXISTENT_ROLE')).rejects.toThrow(NotFoundError);
+      });
+  
+      it('should throw NotFoundException if the user does not have the role', async () => {
+        const userWithoutRole = { ...mockUser, roles: [mockRole, { id: 3, role: 'FAKEROLE', users: [] }] };
+        //FAKEROLE is to avoid "must have at least one role" error.
+        userRepository.findOne.mockResolvedValue(userWithoutRole);
+        rolesService.findOneByRoleName.mockResolvedValue(mockRole2);
+  
+        await expect(service.removeRole('user', 'USER')).rejects.toThrow(
+          new NotFoundException('NOT_FOUND - The user does not have that role'),
+        );
+      });
+  
+      it('should throw ConflictException if user has only one role', async () => {
+        const userWithSingleRole = { ...mockUser, roles: [mockRole] };
+        userRepository.findOne.mockResolvedValue(userWithSingleRole);
+        rolesService.findOneByRoleName.mockResolvedValue(mockRole);
+  
+        await expect(service.removeRole('user', 'ADMIN')).rejects.toThrow(
+          new ConflictException('NOT-ALLOWED - Users must have at least one role, add one before delete.'),
+        );
+      });
+    });
 });
