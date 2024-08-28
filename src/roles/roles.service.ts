@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './entities/role.entity';
@@ -9,7 +9,7 @@ export class RolesService {
   constructor(
     @InjectRepository(Role)
     private readonly rolesRepository: Repository<Role>,
-  ) {}
+  ) { }
 
   //Create Role
   async create(createRoleDto: CreateRoleDto): Promise<Role> {
@@ -24,16 +24,23 @@ export class RolesService {
 
   //Find role by Id
   async findOneByID(reoleId: number): Promise<Role> {
-    return await this.rolesRepository.findOne({where:{id:reoleId}});
+    const role = await this.rolesRepository.findOne({ where: { id: reoleId } });
+    if (role) {
+      return role;
+    } else throw new NotFoundException;
   }
 
   //Find role by role name
-  async findOneByRoleName(roleName: string): Promise<Role>{
-    return await this.rolesRepository.findOne({
+  async findOneByRoleName(roleName: string): Promise<Role> {
+    const role = await this.rolesRepository.findOne({
       where: {
         role: roleName,
       }
     })
+
+    if (role) {
+      return role;
+    } else throw new NotFoundException;
   }
 
 }
