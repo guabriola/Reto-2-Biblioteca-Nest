@@ -7,47 +7,47 @@ export class UpdateBookDto {
   */
   @IsString()
   @IsOptional()
-  readonly title: string;
+  title: string;
 
   /**
   * VALUE IS OPTIONAL /
   */
   @IsString()
   @IsOptional()
-  readonly genre: string;
+  genre: string;
 
   /**
   * VALUE IS OPTIONAL /
   */
   @IsString()
   @IsOptional()
-  readonly description: string;
+  description: string;
 
   /**
   * VALUE IS OPTIONAL /
   */
   @IsString()
   @IsOptional()
-  readonly author: string;
+  author: string;
 
   /**
   * VALUE IS OPTIONAL /
   */
   @IsString()
   @IsOptional()
-  readonly publisher: string;
+  publisher: string;
 
   /**
   * VALUE IS OPTIONAL /
   */
   @IsNumber()
   @IsOptional()
-  readonly pages: number;
+  pages: number;
 
   /**
   * VALUE IS OPTIONAL /
   */
   @IsString()
   @IsOptional()
-  readonly image_url: string;
+  image_url: string;
 }
