@@ -30,10 +30,22 @@ import { LoggerService } from './common/services/logger/logger.service';
     BooksModule,
     TypeOrmModule.forFeature([User, Role]),//This is only for the init.services.ts
 
-    TypeOrmModule.forRoot(
-      //Configuration from config.servie with env variables.
-      configService.getTypeOrmConfig(),
-    ),
+    //SqLite for testing and MySQL for develompent/production
+    TypeOrmModule.forRootAsync({
+      useFactory: () => {
+        if (process.env.NODE_ENV === 'test') {
+          return {
+            type: 'sqlite',
+            database: ':memory:',
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            synchronize: true,
+            logging: false,
+          };
+        } else {
+          return configService.getTypeOrmConfig();
+        }
+      },
+    }),
     ReservationsModule,
     UsersModule,
     ThrottlerModule.forRoot([{
@@ -63,7 +75,7 @@ import { LoggerService } from './common/services/logger/logger.service';
       useClass: AllExceptionFilter
     },
     LoggerService,
-    
+
   ],
 })
 export class AppModule implements NestModule {
