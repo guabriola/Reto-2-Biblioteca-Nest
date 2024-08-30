@@ -2,17 +2,17 @@ import { DataSource } from 'typeorm';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { INestApplication } from '@nestjs/common';
 
-declare const app: INestApplication; 
+export function setup(app: INestApplication) {
+  let dataSource: DataSource;
 
-let dataSource: DataSource;
+  beforeEach(async () => {
+    dataSource = app.get<DataSource>(getDataSourceToken());
+    await dataSource.synchronize(true);  // Reset DB
+  });
 
-beforeEach(async () => {
-  dataSource = app.get<DataSource>(getDataSourceToken());
-  await dataSource.synchronize(true);  // Reset DB before every test
-});
-
-afterAll(async () => {
-  if (dataSource.isInitialized) {
-    await dataSource.destroy();  // Closes de DB conect
-  }
-});
+  afterAll(async () => {
+    if (dataSource && dataSource.isInitialized) {
+      await dataSource.destroy();  // Close DB
+    }
+  });
+}
